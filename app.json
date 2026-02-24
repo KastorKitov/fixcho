@@ -4,21 +4,22 @@
     "slug": "fixcho",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/myicon/fixcho_logo_1.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "scheme": "fixcho",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/myicon/fixcho_logo_1.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "icon": "./assets/myicon/fixcho_logo_1.png",
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/myicon/fixcho_logo_1.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
