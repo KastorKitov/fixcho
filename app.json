@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/myicon/fixcho_logo_1.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "scheme": "fixcho",
     "splash": {
       "image": "./assets/myicon/fixcho_logo_1.png",
@@ -22,7 +21,6 @@
         "foregroundImage": "./assets/myicon/fixcho_logo_1.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
