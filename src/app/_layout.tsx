@@ -1,6 +1,7 @@
 import { Stack, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AuthProvider } from '../context/AuthContext';
 
 export default function RootLayout() {
     const router = useRouter();
@@ -24,11 +25,13 @@ export default function RootLayout() {
     }, []);
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="(auth)" />
-            </Stack>
-        </SafeAreaView>
+        <AuthProvider>
+            <SafeAreaView style={{ flex: 1 }}>
+                <Stack screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="(tabs)" />
+                    <Stack.Screen name="(auth)" />
+                </Stack>
+            </SafeAreaView>
+        </AuthProvider>
     );
 }

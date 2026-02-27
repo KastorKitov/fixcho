@@ -1,8 +1,45 @@
 import { useRouter } from 'expo-router';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { useAuth } from '../../context/AuthContext';
 
 export default function RegisterScreen() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
     const router = useRouter();
+    const { signUp } = useAuth();
+
+    //hack
+    useEffect(() => {
+        router.replace("/(auth)/onboarding");
+    }, []);
+
+    const handleSignUp = async () => {
+        if (!email || !password) {
+            Alert.alert("Please fill in all fields");
+            return;
+        }
+
+        if(password.length < 3) {
+            Alert.alert("Password must be at least 3 characters long");
+            return;
+        }
+
+        setIsLoading(true);
+        
+        try {
+            await signUp(email, password);
+            Alert.alert("Sign up successful! Please check your email to confirm your account.");
+            //router.replace('/(auth)/login');
+        } catch (error) {
+            console.error("Sign up error:", error);
+            Alert.alert("Sign up failed. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
     return (
         <View style={styles.container}>
             <View style={styles.content}>
@@ -15,6 +52,8 @@ export default function RegisterScreen() {
                         keyboardType="email-address"
                         autoComplete="email"
                         autoCapitalize="none"
+                        value={email}
+                        onChangeText={setEmail}
                         style={styles.inputField}
                     />
                     <TextInput
@@ -23,11 +62,13 @@ export default function RegisterScreen() {
                         autoComplete="password"
                         secureTextEntry
                         autoCapitalize="none"
+                        value={password}
+                        onChangeText={setPassword}
                         style={styles.inputField}
                     />
                 </View>
-                <TouchableOpacity style={styles.loginButton} onPress={() => console.log("log in pressed")}>
-                    <Text style={styles.loginButtonText}>Sign Up</Text>
+                <TouchableOpacity style={styles.loginButton} onPress={handleSignUp}>
+                    {isLoading ? (<ActivityIndicator color="#fff" size={24} /> ) : (<Text style={styles.loginButtonText}>Sign Up</Text>)}
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.signUpText} onPress={() => router.back()}>
                     <Text style={styles.signUpButtonText}>Already have an account? <Text style={styles.signUpButtonTextBold}>Sign In</Text></Text>
