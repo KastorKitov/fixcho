@@ -12,11 +12,6 @@ export default function RegisterScreen() {
     const router = useRouter();
     const { signUp } = useAuth();
 
-    //hack
-    // useEffect(() => {
-    //     router.replace("/(auth)/onboarding");
-    // }, []);
-
     const handleSignUp = async () => {
         if (!email || !password) {
             Alert.alert("Please fill in all fields");
@@ -32,10 +27,9 @@ export default function RegisterScreen() {
 
         try {
             await signUp(email, password);
-            Alert.alert("Sign up successful! Please check your email to confirm your account.");
-            //router.replace('/(auth)/login');
+            router.push('/(auth)/onboarding');
         } catch (error) {
-            console.error("Sign up error:", error);
+            console.error(error);
             Alert.alert("Sign up failed. Please try again.");
         } finally {
             setIsLoading(false);
