@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { Colors } from '../../constants/colors';
 
 export default function LoginScreen() {
     const router = useRouter();
@@ -55,28 +56,28 @@ const styles = StyleSheet.create({
     subtitle: {
         fontSize: 16,
         marginBottom: 6,
-        color: "#666"
+        color: Colors.subtitle
     },
     inputForm: {
         width: "100%"
     },
     inputField: {
-        backgroundColor: "#f5f5f5",
+        backgroundColor: Colors.inputFieldBackground,
+        borderColor: Colors.inputFieldBorder,
         borderRadius: 12,
         padding: 16,
         fontSize: 16,
         marginBottom: 16,
-        borderWidth: 1,
-        borderColor: "#e0e0e0"
+        borderWidth: 1
     },
     loginButton: {
-        backgroundColor: "#000",
+        backgroundColor: Colors.button,
         borderRadius: 12,
         padding: 16,
         alignItems: "center"
     },
     loginButtonText: {
-        color: "#fff",
+        color: Colors.buttonText,
         fontSize: 16,
         fontWeight: "600"
     },
@@ -85,11 +86,11 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     signUpButtonText: {
-        color: "#666",
+        color: Colors.subtitle,
         fontSize: 14
     },
     signUpButtonTextBold: {
         fontWeight: "600",
-        color: "#000"
+        color: Colors.primary,
     }
 });
