@@ -1,37 +1,57 @@
-import { Stack, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { Stack, useRouter, useSegments } from 'expo-router';
+import { useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AuthProvider } from '../context/AuthContext';
+import { AuthProvider, useAuth } from '../context/AuthContext';
+import { ActivityIndicator, View } from 'react-native';
 
-export default function RootLayout() {
+function RouteGuard() {
     const router = useRouter();
-    const [isReady, setIsReady] = useState(false);
-    const isAuthenticated = false; // This should ideally come from context or a state management solution.
+    const { user, isLoading } = useAuth();
+    const segments = useSegments();
+
+    const inAuthRoute = segments[0] === "(auth)";
+    const inTabsRoute = segments[0] === "(tabs)";
 
     useEffect(() => {
-        // Ensure that the router is fully ready before performing navigation
-        if (isReady) {
-            if (isAuthenticated) {
-                router.replace('/(tabs)');
-            } else {
+        if (isLoading) return;
+        if (!user) {
+            if (!inAuthRoute) {
                 router.replace('/(auth)/login');
             }
+        } else if (!user.onboardingCompleted) {
+            if (segments.join("/") !== "(auth)/onboarding") {
+                router.replace("/(auth)/onboarding");
+            }
+        } else {
+            if (!inTabsRoute) {
+                router.replace('/(tabs)');
+            }
         }
-    }, [isReady]); // Trigger only after the router is ready
+    }, [segments, user, router]);
 
-    useEffect(() => {
-        // Mark the router as ready after the component mounts
-        setIsReady(true);
-    }, []);
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <ActivityIndicator size="large" />
+            </View>
+        );
+    }
+
+    return (
+        <SafeAreaView style={{ flex: 1 }}>
+            <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="(auth)" />
+            </Stack>
+        </SafeAreaView>
+    )
+}
+
+export default function RootLayout() {
 
     return (
         <AuthProvider>
-            <SafeAreaView style={{ flex: 1 }}>
-                <Stack screenOptions={{ headerShown: false }}>
-                    <Stack.Screen name="(tabs)" />
-                    <Stack.Screen name="(auth)" />
-                </Stack>
-            </SafeAreaView>
+            <RouteGuard />
         </AuthProvider>
     );
 }

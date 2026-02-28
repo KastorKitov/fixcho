@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, ActivityIndicator, Image } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import { Colors } from '../../constants/colors';
@@ -35,6 +35,7 @@ export default function RegisterScreen() {
             setIsLoading(false);
         }
     };
+
     return (
         <View style={styles.container}>
             <View style={styles.content}>
