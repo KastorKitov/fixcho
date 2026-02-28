@@ -14,7 +14,8 @@ import { Image } from "expo-image";
 import { supabase } from "../../lib/supabase/client";
 import { uploadProfileImage } from "../../lib/supabase/storage";
 import { useAuth } from '../../context/AuthContext';
-import { useRouter } from "expo-router";
+import { Color, useRouter } from "expo-router";
+import { Colors } from '../../constants/colors';
 
 export default function SignUpScreen() {
   const [name, setName] = useState("");
@@ -22,7 +23,7 @@ export default function SignUpScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const { user, updateUser } = useAuth();
-  const [role, setRole] = useState('User'); // Default is 'User'
+  const [role, setRole] = useState('User');
 
   const router = useRouter();
 
@@ -175,7 +176,7 @@ export default function SignUpScreen() {
           <TextInput
             style={styles.input}
             placeholder="Full Name"
-            placeholderTextColor="#999"
+            placeholderTextColor={Colors.placeholderText}
             value={name}
             onChangeText={setName}
             autoCapitalize="words"
@@ -184,7 +185,7 @@ export default function SignUpScreen() {
           <TextInput
             style={styles.input}
             placeholder="Username"
-            placeholderTextColor="#999"
+            placeholderTextColor={Colors.placeholderText}
             value={username}
             onChangeText={setUsername}
             autoCapitalize="none"
@@ -226,61 +227,61 @@ export default function SignUpScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   content: {
     flex: 1,
     justifyContent: "center",
-    padding: 24,
+    padding: 24
   },
   header: {
-    marginBottom: 32,
+    marginBottom: 32
   },
   title: {
     fontSize: 32,
     fontWeight: "bold",
-    marginBottom: 8,
+    marginBottom: 8
   },
   subtitle: {
     fontSize: 16,
     marginBottom: 32,
-    color: "#666",
+    color: Colors.subtitle
   },
   form: {
     width: "100%",
-    alignItems: "center",
+    alignItems: "center"
   },
   imageContainer: {
     marginBottom: 32,
-    position: "relative",
+    position: "relative"
   },
   profileImage: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: Colors.inputFieldBackground
   },
   placeholderImage: {
     width: 120,
     height: 120,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: Colors.inputFieldBackground,
     borderRadius: 60,
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
     borderWidth: 2,
-    borderColor: "#e0e0e0",
+    borderColor: Colors.inputFieldBorder,
     borderStyle: "dashed",
   },
   placeholderText: {
     fontSize: 48,
-    color: "#999",
+    color: Colors.placeholderText,
   },
   editBadge: {
     position: "absolute",
     bottom: 0,
     right: 0,
-    backgroundColor: "#000",
+    backgroundColor: Colors.button,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
@@ -301,7 +302,7 @@ const styles = StyleSheet.create({
     borderColor: "#e0e0e0",
   },
   button: {
-    backgroundColor: "#000",
+    backgroundColor: Colors.button,
     borderRadius: 12,
     padding: 16,
     alignItems: "center",
@@ -343,11 +344,11 @@ const styles = StyleSheet.create({
     //position: 'relative',
   },
   selectedBox: {
-    backgroundColor: '#007e90',
+    backgroundColor: "#9eb40a"
   },
   label: {
     fontSize: 16,
-    color: '#007e90',
+    color: Colors.button,
     fontWeight: "600",
   },
   selectedText: {
@@ -358,6 +359,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 500,
     marginBottom: 10,
-    color: '#333',
+    color: "#666"
   }
 });

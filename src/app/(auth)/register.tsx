@@ -46,7 +46,7 @@ export default function RegisterScreen() {
                 <View style={styles.inputForm}>
                     <TextInput
                         placeholder="Email..."
-                        placeholderTextColor={"gray"}
+                        placeholderTextColor={Colors.placeholderText}
                         keyboardType="email-address"
                         autoComplete="email"
                         autoCapitalize="none"
@@ -56,7 +56,7 @@ export default function RegisterScreen() {
                     />
                     <TextInput
                         placeholder="Password"
-                        placeholderTextColor={"gray"}
+                        placeholderTextColor={Colors.placeholderText}
                         autoComplete="password"
                         secureTextEntry
                         autoCapitalize="none"
@@ -132,6 +132,6 @@ const styles = StyleSheet.create({
     },
     signUpButtonTextBold: {
         fontWeight: "600",
-        color: Colors.primary
+        color: Colors.primaryBlack
     }
 });
