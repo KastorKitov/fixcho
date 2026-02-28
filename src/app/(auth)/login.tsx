@@ -1,12 +1,14 @@
 import { useRouter } from 'expo-router';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 
 export default function LoginScreen() {
     const router = useRouter();
     return (
         <View style={styles.container}>
             <View style={styles.content}>
-                <Text style={styles.title}>Welcome Back</Text>
+                <View style={styles.imageContainer}>
+                    <Image source={require("../../../assets/myicon/fixcho_logo_1.png")} style={{ width: 400, height: 200 }} />
+                </View>
                 <Text style={styles.subtitle}>Sign In to Continue</Text>
                 <View style={styles.inputForm}>
                     <TextInput
@@ -46,14 +48,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 24
     },
-    title: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        marginBottom: 8
+    imageContainer: {
+        alignItems: "center",
+        marginBottom: 32
     },
     subtitle: {
         fontSize: 16,
-        marginBottom: 32,
+        marginBottom: 6,
         color: "#666"
     },
     inputForm: {

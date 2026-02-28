@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, ActivityIndicator, Image } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 
 export default function RegisterScreen() {
@@ -12,9 +12,9 @@ export default function RegisterScreen() {
     const { signUp } = useAuth();
 
     //hack
-    useEffect(() => {
-        router.replace("/(auth)/onboarding");
-    }, []);
+    // useEffect(() => {
+    //     router.replace("/(auth)/onboarding");
+    // }, []);
 
     const handleSignUp = async () => {
         if (!email || !password) {
@@ -22,13 +22,13 @@ export default function RegisterScreen() {
             return;
         }
 
-        if(password.length < 3) {
+        if (password.length < 3) {
             Alert.alert("Password must be at least 3 characters long");
             return;
         }
 
         setIsLoading(true);
-        
+
         try {
             await signUp(email, password);
             Alert.alert("Sign up successful! Please check your email to confirm your account.");
@@ -43,6 +43,9 @@ export default function RegisterScreen() {
     return (
         <View style={styles.container}>
             <View style={styles.content}>
+                <View style={styles.imageContainer}>
+                    <Image source={require("../../../assets/myicon/fixcho_logo_1.png")} style={{ width: 400, height: 200 }} />
+                </View>
                 <Text style={styles.title}>Welcome</Text>
                 <Text style={styles.subtitle}>Sign Up to Get Started</Text>
                 <View style={styles.inputForm}>
@@ -68,7 +71,7 @@ export default function RegisterScreen() {
                     />
                 </View>
                 <TouchableOpacity style={styles.loginButton} onPress={handleSignUp}>
-                    {isLoading ? (<ActivityIndicator color="#fff" size={24} /> ) : (<Text style={styles.loginButtonText}>Sign Up</Text>)}
+                    {isLoading ? (<ActivityIndicator color="#fff" size={24} />) : (<Text style={styles.loginButtonText}>Sign Up</Text>)}
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.signUpText} onPress={() => router.back()}>
                     <Text style={styles.signUpButtonText}>Already have an account? <Text style={styles.signUpButtonTextBold}>Sign In</Text></Text>
@@ -87,6 +90,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 24
     },
+    imageContainer: {
+        alignItems: "center",
+        marginBottom: 32
+    },
     title: {
         fontSize: 32,
         fontWeight: 'bold',
@@ -94,7 +101,7 @@ const styles = StyleSheet.create({
     },
     subtitle: {
         fontSize: 16,
-        marginBottom: 32,
+        marginBottom: 18,
         color: "#666"
     },
     inputForm: {
