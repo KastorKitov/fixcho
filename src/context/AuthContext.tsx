@@ -6,6 +6,7 @@ export interface User {
     name: string;
     email: string;
     username: string;
+    role: string;
     profileImage?: string;
     onboardingCompleted?: boolean;
 }
@@ -71,6 +72,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 name: data.name,
                 email: authUser.data.user.email || "",
                 username: data.username,
+                role: data.role,
                 profileImage: data.profile_image_url,
                 onboardingCompleted: data.onboarding_completed,
             };
@@ -117,6 +119,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const updateData: any = {};
             if (userData.name !== undefined) updateData.name = userData.name;
             if (userData.username !== undefined) updateData.username = userData.username;
+            if (userData.role !== undefined) updateData.role = userData.role;
             if (userData.profileImage !== undefined) updateData.profile_image_url = userData.profileImage;
             if (userData.onboardingCompleted !== undefined) updateData.onboarding_completed = userData.onboardingCompleted;
 

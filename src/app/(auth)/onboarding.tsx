@@ -7,6 +7,8 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
+  Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -23,7 +25,7 @@ export default function SignUpScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const { user, updateUser } = useAuth();
-  const [role, setRole] = useState('User');
+  const [role, setRole] = useState('user');
 
   const router = useRouter();
 
@@ -130,10 +132,11 @@ export default function SignUpScreen() {
         username,
         profileImage: profileImageUrl,
         onboardingCompleted: true,
+        role: role
       });
 
       router.replace("/(tabs)");
-      
+
     } catch (error) {
       Alert.alert(
         "Error",
@@ -145,7 +148,10 @@ export default function SignUpScreen() {
     }
   };
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       <View style={styles.content}>
         <View style={styles.header}>
           <Text style={styles.title}>Complete Your Profile</Text>
@@ -197,17 +203,17 @@ export default function SignUpScreen() {
             <Text style={styles.radioTitleText}>I am:</Text>
             <View style={styles.radioContainer}>
               <TouchableOpacity
-                style={[styles.box, role === 'User' && styles.selectedBox]}
-                onPress={() => handleRoleChange('User')}
+                style={[styles.box, role === 'user' && styles.selectedBox]}
+                onPress={() => handleRoleChange('user')}
               >
-                <Text style={[styles.label, role === 'User' && styles.selectedText]}>User</Text>
+                <Text style={[styles.label, role === 'user' && styles.selectedText]}>User</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.box, role === 'Professional' && styles.selectedBox]}
-                onPress={() => handleRoleChange('Professional')}
+                style={[styles.box, role === 'professional' && styles.selectedBox]}
+                onPress={() => handleRoleChange('professional')}
               >
-                <Text style={[styles.label, role === 'Professional' && styles.selectedText]}>Professional</Text>
+                <Text style={[styles.label, role === 'professional' && styles.selectedText]}>Professional</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -223,7 +229,7 @@ export default function SignUpScreen() {
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 

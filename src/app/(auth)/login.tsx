@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
@@ -33,7 +33,10 @@ export default function LoginScreen() {
     };
 
     return (
-        <View style={styles.container}>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.container}
+        >
             <View style={styles.content}>
                 <View style={styles.imageContainer}>
                     <Image source={require("../../../assets/myicon/fixcho_logo_1.png")} style={{ width: 400, height: 200 }} />
@@ -72,7 +75,7 @@ export default function LoginScreen() {
                     <Text style={styles.signUpButtonText}>Don't have an account? <Text style={styles.signUpButtonTextBold}>Sign Up</Text></Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </KeyboardAvoidingView>
     );
 }
 
