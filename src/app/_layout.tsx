@@ -11,6 +11,7 @@ function RouteGuard() {
 
     const inAuthRoute = segments[0] === "(auth)";
     const inTabsRoute = segments[0] === "(tabs)";
+    const inJobRoute = segments[0] === "(job)";
 
     useEffect(() => {
         if (isLoading) return;
@@ -23,7 +24,8 @@ function RouteGuard() {
                 router.replace("/(auth)/onboarding");
             }
         } else {
-            if (!inTabsRoute) {
+            if(inJobRoute) {
+            } else if (!inTabsRoute) {
                 router.replace('/(tabs)');
             }
         }
@@ -42,6 +44,7 @@ function RouteGuard() {
             <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(tabs)" />
                 <Stack.Screen name="(auth)" />
+                <Stack.Screen name="(job)" />
             </Stack>
         </SafeAreaView>
     )

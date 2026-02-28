@@ -131,7 +131,9 @@ export default function SignUpScreen() {
         profileImage: profileImageUrl,
         onboardingCompleted: true,
       });
+
       router.replace("/(tabs)");
+      
     } catch (error) {
       Alert.alert(
         "Error",
@@ -211,7 +213,7 @@ export default function SignUpScreen() {
           </View>
 
           <TouchableOpacity style={styles.button}
-          onPress={handleComplete}
+            onPress={handleComplete}
           >
             {isLoading ? (
               <ActivityIndicator size={24} color="#fff" />

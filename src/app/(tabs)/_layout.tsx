@@ -1,11 +1,14 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from "@expo/vector-icons";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import {Colors} from '../../constants/colors'; 
+import { Colors } from '../../constants/colors';
 
 export default function TabsLayout() {
     return (
-        <Tabs screenOptions={{ tabBarActiveTintColor: Colors.button }}>
+        <Tabs screenOptions={{
+            tabBarActiveTintColor: Colors.button,
+            headerShown: false
+        }}>
             <Tabs.Screen name="index"
                 options={{
                     title: "Jobs",

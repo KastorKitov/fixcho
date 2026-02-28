@@ -3,8 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 export default function ThirdPage() {
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Third Page</Text>
-            <Text style={styles.subtitle}>Test Page</Text>
+            <Text style={styles.subtitle}>no professionals displayed</Text>
         </View>
     );
 }
