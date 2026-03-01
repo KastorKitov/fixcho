@@ -15,12 +15,12 @@ export default function TabsLayout() {
             <Tabs.Screen name="index"
                 options={{
                     title: "Jobs",
-                    tabBarIcon: ({ color, size, focused }) => <MaterialIcons name={focused ? "work" : "work-outline"} size={20} color={color} />
+                    tabBarIcon: ({ color, size, focused }) => <MaterialIcons name={focused ? "work" : "work-outline"} size={size} color={color} />
                 }}
             />
             <Tabs.Screen name="profile" options={{
                 title: "Profile",
-                tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? "person" : "person-outline"} size={20} color={color} />
+                tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? "person" : "person-outline"} size={size} color={color} />
             }}
             />
         </Tabs>

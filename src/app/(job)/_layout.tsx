@@ -6,8 +6,29 @@ export default function JobLayout() {
         <Stack>
             <Stack.Screen name="addJob" options={{
                 title: "Add Job",
+                headerStyle: {
+                    backgroundColor: "#fff",
+                },
+                headerTintColor: "#000",
+                headerTitleStyle: {
+                    fontWeight: "bold",
+                },
             }
             } />
+            <Stack.Screen
+                name="details"
+                options={{
+                    title: "Job Details",
+                    headerStyle: {
+                        backgroundColor: "#fff",
+                    },
+                    headerTintColor: "#000",
+                    headerTitleStyle: {
+                        fontWeight: "bold",
+                    },
+                }}
+            />
         </Stack>
+
     );
 }
