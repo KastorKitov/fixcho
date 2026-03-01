@@ -17,7 +17,7 @@ export default function AddJob() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [image, setImage] = useState<string | null>(null);
   const [negotiable, setNegotiable] = useState(false);
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [priceRange, setPriceRange] = useState([0, 0]);
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [location, setLocation] = useState('');
@@ -83,32 +83,100 @@ export default function AddJob() {
     return Number(value.replace(/,/g, '')) || 0;
   };
 
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isValidPhone = (phone: string) => {
+    if (!phone) return true; // optional field
+    const phoneRegex = /^[0-9+\-\s()]{6,20}$/;
+    return phoneRegex.test(phone);
+  };
+
+const validateFields = () => {
+  const trimmedTitle = title.trim();
+  const trimmedCategory = category.trim();
+  const trimmedDescription = description.trim();
+  const trimmedEmail = email.trim();
+
+  if (!trimmedTitle) {
+    Alert.alert("Title Required", "Please enter a job title.");
+    return false;
+  }
+
+  if (trimmedTitle.length < 6) {
+    Alert.alert("Title Too Short", "Title must be at least 6 characters long.");
+    return false;
+  }
+
+  if (!trimmedCategory) {
+    Alert.alert("Category Required", "Please enter a category.");
+    return false;
+  }
+
+  if (trimmedCategory.length < 6) {
+    Alert.alert("Category Too Short", "Category must be at least 6 characters long.");
+    return false;
+  }
+
+  if (!trimmedDescription) {
+    Alert.alert("Description Required", "Please enter a description.");
+    return false;
+  }
+
+  if (trimmedDescription.length < 12) {
+    Alert.alert("Description Too Short", "Description must be at least 12 characters long.");
+    return false;
+  }
+
+  if (!trimmedEmail) {
+    Alert.alert("Email Required", "Please enter your email.");
+    return false;
+  }
+
+  if (!isValidEmail(trimmedEmail)) {
+    Alert.alert("Invalid Email", "Please enter a valid email address.");
+    return false;
+  }
+
+  if (!isValidPhone(phoneNumber)) {
+    Alert.alert("Invalid Phone", "Please enter a valid phone number.");
+    return false;
+  }
+
+  if (!negotiable) {
+    const min = parseNumber(minPrice);
+    const max = parseNumber(maxPrice);
+
+    if (!maxPrice || max === 0) {
+      Alert.alert("Price Required", "Please enter at least a maximum price.");
+      return false;
+    }
+
+    if (min < 0 || max < 0) {
+      Alert.alert("Invalid Price", "Price cannot be negative.");
+      return false;
+    }
+
+    if (min > max) {
+      Alert.alert("Invalid Price", "Minimum price cannot be greater than maximum price.");
+      return false;
+    }
+
+    if (max > 10000000) {
+      Alert.alert("Invalid Price", "Maximum price is too high.");
+      return false;
+    }
+  }
+
+  return true;
+};
+
   const handleAddJob = async () => {
 
-    if (!negotiable) {
-      const min = parseNumber(minPrice);
-      const max = parseNumber(maxPrice);
-
-      if (!maxPrice || max === 0) {
-        Alert.alert("Price Required", "Please enter atleast maximum price.");
-        return;
-      }
-
-      if (min < 0 || max < 0) {
-        Alert.alert("Invalid Price", "Price cannot be negative.");
-        return;
-      }
-
-      if (min > max) {
-        Alert.alert("Invalid Price", "Minimum price cannot be greater than maximum price.");
-        return;
-      }
-
-      if (max > 10000000) {
-        Alert.alert("Invalid Price", "Maximum price is too high.");
-        return;
-      }
-    }
+    const isValid = validateFields();
+    if (!isValid) return;
 
     try {
       await createJob(title, email, image || '', category, description, location, negotiable, minPrice, maxPrice, contactName, phoneNumber);
@@ -121,6 +189,7 @@ export default function AddJob() {
       setContactName('');
       setEmail('');
       setPhoneNumber('');
+      setPriceRange([0, 0]);
       setImage(null);
       router.replace("/(tabs)");
     } catch (error) {
@@ -157,24 +226,24 @@ export default function AddJob() {
         {/* Input Fields */}
         <TextInput
           style={styles.input}
-          placeholder="Title"
+          placeholder="Title*"
           value={title}
-          onChangeText={setTitle}
         />
+        <Text style={styles.helperText}>Minimum 6 characters</Text>
         <TextInput
           style={styles.input}
-          placeholder="Category"
+          placeholder="Category*"
           value={category}
-          onChangeText={setCategory}
         />
+        <Text style={styles.helperText}>Minimum 6 characters</Text>
         <TextInput
           style={styles.textArea}
-          placeholder="Description"
+          placeholder="Description*"
           value={description}
-          onChangeText={setDescription}
           multiline
           maxLength={700}
         />
+        <Text style={styles.helperText}>Minimum 12 characters</Text>
         <TextInput
           style={styles.input}
           placeholder="Location"
@@ -267,7 +336,7 @@ export default function AddJob() {
         />
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder="Email*"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -410,4 +479,10 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     fontSize: 16,
   },
+  helperText: {
+    fontSize: 12,
+    color: '#888',
+    marginTop: -12,
+    marginBottom: 12,
+  }
 });
