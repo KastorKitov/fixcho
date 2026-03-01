@@ -70,7 +70,7 @@ export default function AddJob() {
   const handleAddJob = async () => {
 
     try {
-      await createJob(image || '', description);
+      await createJob(title, email, image || '', category, description, contactName, phoneNumber);
       setTitle('');
       setCategory('');
       setDescription('');
