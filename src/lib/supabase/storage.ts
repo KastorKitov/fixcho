@@ -35,7 +35,7 @@ export const uploadJobImage = async (userId: string, imageUri: string) => {
             .from("jobs")
             .upload(fileName, bytes, {
                 contentType: `image/${fileExtension}`,
-                upsert: false,
+                upsert: true,
             });
 
         if (error) {

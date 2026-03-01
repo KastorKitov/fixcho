@@ -23,6 +23,10 @@ export interface Job {
   created_at: string;
   expires_at: string;
   is_active: boolean;
+  location: string;
+  negotiable: boolean;
+  min_price: string;
+  max_price: string;
   profiles?: JobsUser;
 }
 
@@ -73,27 +77,24 @@ export const useJobs = () => {
       setIsLoading(false);
     }
   };
-  const createJob = async (title: string, email: string, imageUri?: string, category?: string, description?: string, contactName?: string, phoneNumber?: string) => {
+  const createJob = async (
+    title: string, email: string, imageUri?: string, category?: string, 
+    description?: string, location?: string, negotiable?: boolean, minPrice?: string, maxPrice?: string, 
+    contactName?: string, phoneNumber?: string) => {
     if (!user) {
       throw new Error("User not authenticated");
     }
-console.log("here:");
     try {
       // Deactivate any existing jobs
-      const { error: deactivateError } = await supabase
-        .from("jobs")
-        .update({ is_active: false })
-        .eq("user_id", user.id)
-        .eq("is_active", true);
-console.log("here1");
-      if (deactivateError) {
-        console.error("Error deactivating old jobs:", deactivateError);
-      }
-console.log("here2");
-console.log("imageUri:", imageUri);
+      // const { error: deactivateError } = await supabase
+      //   .from("jobs")
+      //   .update({ is_active: false })
+      //   .eq("user_id", user.id)
+      //   .eq("is_active", true);
+      // if (deactivateError) {
+      //   console.error("Error deactivating old jobs:", deactivateError);
+      // }
       const imageUrl = imageUri ? await uploadJobImage(user.id, imageUri) : null;
-
-      console.log("imageUrl:", imageUrl);
 
       // Calculate expiration time
       const now = new Date();
@@ -107,6 +108,10 @@ console.log("imageUri:", imageUri);
           title: title,
           category: category || null,
           description: description || null,
+          location: location || null,
+          negotiable: negotiable || false,
+          min_price: minPrice || null,
+          max_price: maxPrice || null,
           contact_name: contactName || null,
           email: email,
           phone_number: phoneNumber || null,

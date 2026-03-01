@@ -5,6 +5,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import * as ImagePicker from "expo-image-picker";
 import { useJobs } from '../../hooks/useJobs';
 import { useRouter } from 'expo-router';
+import Slider from '@react-native-community/slider';
+import { Switch } from 'react-native';
 
 export default function AddJob() {
   const [title, setTitle] = useState('');
@@ -14,6 +16,11 @@ export default function AddJob() {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [image, setImage] = useState<string | null>(null);
+  const [negotiable, setNegotiable] = useState(false);
+  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [location, setLocation] = useState('');
 
   const { createJob } = useJobs();
   const router = useRouter();
@@ -52,7 +59,7 @@ export default function AddJob() {
     const result = await ImagePicker.launchCameraAsync({
       //allowsEditing: true,
       // aspect: [1, 1],
-      quality: 1,
+      quality: 0.8,
     });
     if (!result.canceled && result.assets[0]) {
       setImage(result.assets[0].uri);
@@ -67,13 +74,50 @@ export default function AddJob() {
     ]);
   };
 
+  const formatNumber = (value: string) => {
+    const number = value.replace(/[^0-9]/g, '');
+    return number.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
+  const parseNumber = (value: string) => {
+    return Number(value.replace(/,/g, '')) || 0;
+  };
+
   const handleAddJob = async () => {
 
+    if (!negotiable) {
+      const min = parseNumber(minPrice);
+      const max = parseNumber(maxPrice);
+
+      if (!maxPrice || max === 0) {
+        Alert.alert("Price Required", "Please enter atleast maximum price.");
+        return;
+      }
+
+      if (min < 0 || max < 0) {
+        Alert.alert("Invalid Price", "Price cannot be negative.");
+        return;
+      }
+
+      if (min > max) {
+        Alert.alert("Invalid Price", "Minimum price cannot be greater than maximum price.");
+        return;
+      }
+
+      if (max > 10000000) {
+        Alert.alert("Invalid Price", "Maximum price is too high.");
+        return;
+      }
+    }
+
     try {
-      await createJob(title, email, image || '', category, description, contactName, phoneNumber);
+      await createJob(title, email, image || '', category, description, location, negotiable, minPrice, maxPrice, contactName, phoneNumber);
       setTitle('');
       setCategory('');
       setDescription('');
+      setLocation('');
+      setMinPrice('');
+      setMaxPrice('');
       setContactName('');
       setEmail('');
       setPhoneNumber('');
@@ -131,6 +175,90 @@ export default function AddJob() {
           multiline
           maxLength={700}
         />
+        <TextInput
+          style={styles.input}
+          placeholder="Location"
+          value={location}
+          onChangeText={setLocation}
+        />
+        {/* PRICE SECTION */}
+        <Text style={styles.sectionLabel}>Price Range</Text>
+
+        {/* Negotiable Toggle */}
+        <View style={styles.negotiableRow}>
+          <Text style={styles.negotiableText}>Negotiable</Text>
+          <Switch
+            value={negotiable}
+            onValueChange={setNegotiable}
+            thumbColor={Colors.button}
+          />
+        </View>
+
+        {!negotiable && (
+          <>
+            {/* Inputs */}
+            <View style={styles.priceRow}>
+              <View style={styles.priceInputWrapper}>
+                <Text style={styles.currency}>€</Text>
+                <TextInput
+                  style={styles.priceInput}
+                  placeholder="Min"
+                  value={minPrice}
+                  onChangeText={(text) => {
+                    const formatted = formatNumber(text);
+                    setMinPrice(formatted);
+                    setPriceRange([parseNumber(formatted), priceRange[1]]);
+                  }}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              <View style={styles.priceInputWrapper}>
+                <Text style={styles.currency}>€</Text>
+                <TextInput
+                  style={styles.priceInput}
+                  placeholder="Max"
+                  value={maxPrice}
+                  onChangeText={(text) => {
+                    const formatted = formatNumber(text);
+                    setMaxPrice(formatted);
+                    setPriceRange([priceRange[0], parseNumber(formatted)]);
+                  }}
+                  keyboardType="numeric"
+                />
+              </View>
+            </View>
+
+            {/* Slider */}
+            <Slider
+              style={{ width: '100%', height: 40, }}
+              minimumTrackTintColor={Colors.button}
+              thumbTintColor={Colors.button}
+              minimumValue={0}
+              maximumValue={10000}
+              step={50}
+              value={priceRange[0]}
+              onValueChange={(value) => {
+                setPriceRange([value, priceRange[1]]);
+                setMinPrice(formatNumber(String(value)));
+              }}
+            />
+
+            <Slider
+              style={{ width: '100%', height: 40 }}
+              minimumTrackTintColor={Colors.button}
+              thumbTintColor={Colors.button}
+              minimumValue={0}
+              maximumValue={10000}
+              step={50}
+              value={priceRange[1]}
+              onValueChange={(value) => {
+                setPriceRange([priceRange[0], value]);
+                setMaxPrice(formatNumber(String(value)));
+              }}
+            />
+          </>
+        )}
         <TextInput
           style={styles.input}
           placeholder="Contact Name"
@@ -233,5 +361,53 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: '#fff',
     fontSize: 18,
+  },
+  sectionLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 8,
+    marginTop: 4,
+    color: '#333',
+  },
+
+  negotiableRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+
+  negotiableText: {
+    fontSize: 16,
+    color: '#333',
+  },
+
+  priceRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+
+  priceInputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.inputFieldBackground,
+    borderColor: Colors.inputFieldBorder,
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    flex: 0.48,
+  },
+
+  currency: {
+    fontSize: 16,
+    marginRight: 6,
+    color: '#666',
+  },
+
+  priceInput: {
+    flex: 1,
+    paddingVertical: 14,
+    fontSize: 16,
   },
 });
