@@ -7,17 +7,20 @@ export default function TabsLayout() {
     return (
         <Tabs screenOptions={{
             tabBarActiveTintColor: Colors.button,
-            headerShown: false
+            headerShown: false,
+            tabBarStyle: {
+                height: 70,
+            },
         }}>
             <Tabs.Screen name="index"
                 options={{
                     title: "Jobs",
-                    tabBarIcon: ({ color, size, focused }) => <MaterialIcons name={focused ? "work" : "work-outline"} size={size} color={color} />
+                    tabBarIcon: ({ color, size, focused }) => <MaterialIcons name={focused ? "work" : "work-outline"} size={20} color={color} />
                 }}
             />
-            <Tabs.Screen name="thirdPage" options={{
-                title: "Professionals",
-                tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? "person" : "person-outline"} size={size} color={color} />
+            <Tabs.Screen name="profile" options={{
+                title: "Profile",
+                tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? "person" : "person-outline"} size={20} color={color} />
             }}
             />
         </Tabs>

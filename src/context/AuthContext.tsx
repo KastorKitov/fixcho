@@ -17,6 +17,7 @@ interface AuthContextType {
     signUp: (email: string, password: string) => Promise<void>;
     signIn: (email: string, password: string) => Promise<void>;
     updateUser: (userData: Partial<User>) => Promise<void>;
+    signOut: () => Promise<void>;
 
 }
 
@@ -30,10 +31,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         checkSession();
     }, []);
 
+    const signOut = async () => {
+        await supabase.auth.signOut();
+        setUser(null);
+    };
+
     const checkSession = async () => {
         setIsLoading(true);
         try {
-            const { data: {session} } = await supabase.auth.getSession();
+            const { data: { session } } = await supabase.auth.getSession();
 
             if (session?.user) {
                 const profile = await fetchUserProfile(session.user.id);
@@ -135,7 +141,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }
 
-    return <AuthContext.Provider value={{ user, signUp, updateUser, signIn, isLoading }}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ user, signUp, updateUser, signIn, isLoading, signOut }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
