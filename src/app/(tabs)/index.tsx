@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
 import { Colors } from '../../constants/colors';
-import { useRouter } from 'expo-router';
+import { router, useRouter } from 'expo-router';
 import { Job, useJobs } from '../../hooks/useJobs';
 import { Image } from "expo-image";
 import { formatTimeAgo } from '../../lib/date-helper';
@@ -11,31 +11,41 @@ interface JobCardProps {
 }
 
 const JobCard = ({ job }: JobCardProps) => {
+  const router = useRouter();
 
   return (
-    <View style={styles.jobItemContainer}>
-      <View style={styles.jobContentContainer}>
-        {job.image_url ? (
-          <Image source={{ uri: job.image_url }} style={styles.jobImage} />
-        ) : (
-          <Image source={require('../../../assets/myicon/no_job_photo.png')} style={styles.jobImage} />
-        )}
-        <View style={styles.jobTextContainer}>
-          <Text style={styles.jobTitle}>{job.title}</Text>
-          {job.negotiable ?
-            <Text style={styles.jobSubText}>Negotiable</Text> :
-            <Text style={styles.jobPrice}>
-              {`${job.min_price ?? 0}€ - ${job.max_price ?? 0}€`}
+    <TouchableOpacity
+      onPress={() =>
+        router.push({
+          pathname: "/(job)/details",
+          params: { id: job.id },
+        })
+      }
+    >
+      <View style={styles.jobItemContainer}>
+        <View style={styles.jobContentContainer}>
+          {job.image_url ? (
+            <Image source={{ uri: job.image_url }} style={styles.jobImage} />
+          ) : (
+            <Image source={require('../../../assets/myicon/no_job_photo.png')} style={styles.jobImage} />
+          )}
+          <View style={styles.jobTextContainer}>
+            <Text style={styles.jobTitle}>{job.title}</Text>
+            {job.negotiable ?
+              <Text style={styles.jobSubText}>Negotiable</Text> :
+              <Text style={styles.jobPrice}>
+                {`${job.min_price ?? 0}€ - ${job.max_price ?? 0}€`}
+              </Text>
+            }
+            <Text style={styles.jobDescription} numberOfLines={3} ellipsizeMode="tail">
+              {job.description || ""}
             </Text>
-          }
-          <Text style={styles.jobDescription} numberOfLines={3} ellipsizeMode="tail">
-            {job.description || ""}
-          </Text>
-          <Text style={styles.jobSubText}>{job.location}</Text>
-          <Text style={styles.jobSubText}>{formatTimeAgo(job.created_at)}</Text>
+            <Text style={styles.jobSubText}>{job.location}</Text>
+            <Text style={styles.jobSubText}>{formatTimeAgo(job.created_at)}</Text>
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity >
   );
 };
 
