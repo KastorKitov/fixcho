@@ -67,6 +67,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 console.error("No authenticated user found");
                 return null;
             }
+
             return {
                 id: data.id,
                 name: data.name,
@@ -119,6 +120,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const updateData: any = {};
             if (userData.name !== undefined) updateData.name = userData.name;
             if (userData.username !== undefined) updateData.username = userData.username;
+            if (userData.email !== undefined) updateData.email = userData.email;
             if (userData.role !== undefined) updateData.role = userData.role;
             if (userData.profileImage !== undefined) updateData.profile_image_url = userData.profileImage;
             if (userData.onboardingCompleted !== undefined) updateData.onboarding_completed = userData.onboardingCompleted;

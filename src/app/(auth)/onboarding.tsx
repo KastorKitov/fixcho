@@ -11,12 +11,11 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { supabase } from "../../lib/supabase/client";
 import { uploadProfileImage } from "../../lib/supabase/storage";
 import { useAuth } from '../../context/AuthContext';
-import { Color, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { Colors } from '../../constants/colors';
 
 export default function SignUpScreen() {
@@ -130,6 +129,7 @@ export default function SignUpScreen() {
       await updateUser({
         name,
         username,
+        email: user.email,
         profileImage: profileImageUrl,
         onboardingCompleted: true,
         role: role
