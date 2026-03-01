@@ -1,34 +1,55 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { useRouter } from 'expo-router';
 import { Job, useJobs } from '../../hooks/useJobs';
 import { Image } from "expo-image";
 import { formatTimeAgo } from '../../lib/date-helper';
+import { useState } from 'react';
 
-export default function Index() {
-  const router = useRouter();
-  const { jobs } = useJobs();
+interface JobCardProps {
+  job: Job;
+}
 
-  interface JobCardProps {
-    job: Job;
-  }
+const JobCard = ({ job }: JobCardProps) => {
 
-  const JobCard = ({ job }: JobCardProps) => {
-
-    return (
-      <View style={styles.jobItemContainer}>
-        <View style={styles.jobContentContainer}>
-          <Image source={{ uri: job.image_url }} style={styles.jobImage} />
-          <View style={styles.jobTextContainer}>
-            <Text style={styles.jobTitle}>{job.title}</Text>
+  return (
+    <View style={styles.jobItemContainer}>
+      <View style={styles.jobContentContainer}>
+        <Image source={{ uri: job.image_url }} style={styles.jobImage} />
+        <View style={styles.jobTextContainer}>
+          <Text style={styles.jobTitle}>{job.title}</Text>
+          {job.negotiable ?
+            <Text style={styles.jobSubText}>Negotiable</Text> :
             <Text style={styles.jobPrice}>{job.min_price + "€ - " + job.max_price + "€"}</Text>
-            <Text style={styles.jobDescription}>{job.description || ""}</Text>
-            <Text style={styles.jobSubText}>{job.location}</Text>
-            <Text style={styles.jobSubText}>{formatTimeAgo(job.created_at)}</Text>
-          </View>
+          }
+          <Text style={styles.jobDescription} numberOfLines={3} ellipsizeMode="tail">
+            {job.description || ""}
+          </Text>
+          <Text style={styles.jobSubText}>{job.location}</Text>
+          <Text style={styles.jobSubText}>{formatTimeAgo(job.created_at)}</Text>
         </View>
       </View>
-    );
+    </View>
+  );
+};
+
+export default function Index() {
+  const [refreshing, setRefreshing] = useState(false);
+
+
+  const router = useRouter();
+  const { jobs, refreshJobs } = useJobs();
+
+  const onRefresh = async () => {
+    setRefreshing(true)
+
+    try {
+      await refreshJobs();
+    } catch (error) {
+      console.error("Error refreshing posts:", error);
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const renderJob = ({ item }: { item: Job }) => (
@@ -45,6 +66,7 @@ export default function Index() {
         renderItem={renderJob}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={<Text>No jobs found</Text>}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
       <TouchableOpacity style={styles.plusButton} onPress={() => router.push('/(job)/addJob')}>
         <Text style={styles.plusButtonText}>+</Text>
@@ -95,18 +117,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   jobContentContainer: {
-    flexDirection: 'row', // This makes the image and text align side by side
+    flexDirection: 'row',
     padding: 10,
-    alignItems: 'center', // Vertically center the image and text
+    alignItems: 'center',
   },
   jobImage: {
-    width: 100,  // Adjust the width of the image
-    height: 100, // Adjust the height of the image
+    width: 120,
+    height: 120,
     resizeMode: 'cover',
-    marginRight: 10, // Add some space between the image and text
+    marginRight: 10,
   },
   jobTextContainer: {
-    flex: 1, // Ensures the text takes up the remaining space
+    flex: 1,
   },
   jobTitle: {
     fontSize: 16,
