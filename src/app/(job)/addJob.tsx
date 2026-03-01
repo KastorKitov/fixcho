@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { Colors } from '../../constants/colors'; // Assuming Colors is a predefined constant in your project
+import { Colors } from '../../constants/colors';
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import * as ImagePicker from "expo-image-picker";
 
 export default function AddJob() {
   const [title, setTitle] = useState('');
@@ -10,9 +11,58 @@ export default function AddJob() {
   const [contactName, setContactName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<string | null>(null);
 
-  const handleAddJob = () => {
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permission needed",
+        "We need camera roll permissions to select a profile image.",
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+    if (!result.canceled && result.assets[0]) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const takePhoto = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permission needed",
+        "We need camera permissions to take a photo.",
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      //allowsEditing: true,
+      // aspect: [1, 1],
+      quality: 1,
+    });
+    if (!result.canceled && result.assets[0]) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const showImagePicker = () => {
+    Alert.alert("Select Profile Image", "Choose an option", [
+      { text: "Camera", onPress: takePhoto },
+      { text: "Photo Library", onPress: pickImage },
+      { text: "Cancel", style: "cancel" },
+    ]);
+  };
+
+  const handleAddJob = async () => {
     // Here you would likely want to send this data to an API or handle it according to your app's logic
     Alert.alert("Job Added", "Your job has been successfully added!");
   };
@@ -30,12 +80,15 @@ export default function AddJob() {
         <Text style={styles.subtitle}>What do you offer?</Text>
 
         {/* Image Container */}
-        <View style={styles.imageContainer}>
-          <TouchableOpacity style={styles.addImageButton}>
-            <Text style={styles.addImageText}>Add Picture</Text>
-          </TouchableOpacity>
-          {image && <Image source={{ uri: image }} style={styles.image} />}
-        </View>
+        <TouchableOpacity style={styles.imageContainer} onPress={showImagePicker}>
+          {image ? (
+            <Image source={{ uri: image }} style={styles.image} />
+          ) : (
+            <View style={styles.addImageButton}>
+              <Text style={styles.addImageText}>Add Picture</Text>
+            </View>
+          )}
+        </TouchableOpacity>
 
         {/* Input Fields */}
         <TextInput
@@ -105,7 +158,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: '100%',
-    height: 200,
+    height: 300,
     borderRadius: 10,
     backgroundColor: '#f0f0f0',
     justifyContent: 'center',
@@ -139,7 +192,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderWidth: 1
   },
-    textArea: {
+  textArea: {
     height: 100,
     backgroundColor: Colors.inputFieldBackground,
     borderColor: Colors.inputFieldBorder,
