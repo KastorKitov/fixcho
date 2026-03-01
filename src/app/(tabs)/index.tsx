@@ -15,12 +15,18 @@ const JobCard = ({ job }: JobCardProps) => {
   return (
     <View style={styles.jobItemContainer}>
       <View style={styles.jobContentContainer}>
-        <Image source={{ uri: job.image_url }} style={styles.jobImage} />
+        {job.image_url ? (
+          <Image source={{ uri: job.image_url }} style={styles.jobImage} />
+        ) : (
+          <Image source={require('../../../assets/myicon/no_job_photo.png')} style={styles.jobImage} />
+        )}
         <View style={styles.jobTextContainer}>
           <Text style={styles.jobTitle}>{job.title}</Text>
           {job.negotiable ?
             <Text style={styles.jobSubText}>Negotiable</Text> :
-            <Text style={styles.jobPrice}>{job.min_price + "€ - " + job.max_price + "€"}</Text>
+            <Text style={styles.jobPrice}>
+              {`${job.min_price ?? 0}€ - ${job.max_price ?? 0}€`}
+            </Text>
           }
           <Text style={styles.jobDescription} numberOfLines={3} ellipsizeMode="tail">
             {job.description || ""}
