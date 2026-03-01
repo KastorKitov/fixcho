@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, ActivityIndicator, Image, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import { Colors } from '../../constants/colors';
+import { supabase } from '../../lib/supabase/client';
 
 export default function RegisterScreen() {
     const [email, setEmail] = useState("");
@@ -41,6 +42,20 @@ export default function RegisterScreen() {
         // 3. Confirm Password Validation (Must match the password)
         if (password !== confirmPassword) {
             Alert.alert("Passwords do not match", "Please make sure the passwords match.");
+            return;
+        }
+
+        // 4. Check if email is already in use
+        const { data, error } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("email", email)
+            .maybeSingle();
+        if (error) {
+            throw error;
+        }
+        if (data) {
+            Alert.alert("Email already in use", "Please use a different email address.");
             return;
         }
 
