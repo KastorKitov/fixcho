@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import * as ImagePicker from "expo-image-picker";
+import { useJobs } from '../../hooks/useJobs';
+import { useRouter } from 'expo-router';
 
 export default function AddJob() {
   const [title, setTitle] = useState('');
@@ -12,6 +14,9 @@ export default function AddJob() {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [image, setImage] = useState<string | null>(null);
+
+  const { createJob } = useJobs();
+  const router = useRouter();
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -63,7 +68,22 @@ export default function AddJob() {
   };
 
   const handleAddJob = async () => {
-    // Here you would likely want to send this data to an API or handle it according to your app's logic
+
+    try {
+      await createJob(image || '', description);
+      setTitle('');
+      setCategory('');
+      setDescription('');
+      setContactName('');
+      setEmail('');
+      setPhoneNumber('');
+      setImage(null);
+      router.replace("/(tabs)");
+    } catch (error) {
+      Alert.alert("Error", "There was an error adding your job. Please try again.");
+      return;
+    }
+
     Alert.alert("Job Added", "Your job has been successfully added!");
   };
 
