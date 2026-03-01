@@ -26,63 +26,64 @@ export default function AddJob() {
         bottomOffset={10}
         contentContainerStyle={styles.scrollViewContent}
       >
-      {/* Subtitle */}
-      <Text style={styles.subtitle}>What do you offer?</Text>
+        {/* Subtitle */}
+        <Text style={styles.subtitle}>What do you offer?</Text>
 
-      {/* Image Container */}
-      <View style={styles.imageContainer}>
-        <TouchableOpacity style={styles.addImageButton}>
-          <Text style={styles.addImageText}>Add Picture</Text>
+        {/* Image Container */}
+        <View style={styles.imageContainer}>
+          <TouchableOpacity style={styles.addImageButton}>
+            <Text style={styles.addImageText}>Add Picture</Text>
+          </TouchableOpacity>
+          {image && <Image source={{ uri: image }} style={styles.image} />}
+        </View>
+
+        {/* Input Fields */}
+        <TextInput
+          style={styles.input}
+          placeholder="Title"
+          value={title}
+          onChangeText={setTitle}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Category"
+          value={category}
+          onChangeText={setCategory}
+        />
+        <TextInput
+          style={styles.textArea}
+          placeholder="Description"
+          value={description}
+          onChangeText={setDescription}
+          multiline
+          maxLength={700}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Contact Name"
+          value={contactName}
+          onChangeText={setContactName}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="phone-pad"
+        />
+
+        {/* Add Job Button */}
+        <TouchableOpacity style={styles.addButton} onPress={handleAddJob}>
+          <Text style={styles.addButtonText}>Add Job</Text>
         </TouchableOpacity>
-        {image && <Image source={{ uri: image }} style={styles.image} />}
-      </View>
-
-      {/* Input Fields */}
-      <TextInput
-        style={styles.input}
-        placeholder="Title"
-        value={title}
-        onChangeText={setTitle}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Category"
-        value={category}
-        onChangeText={setCategory}
-      />
-      <TextInput
-        style={styles.textArea}
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-        multiline
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Contact Name"
-        value={contactName}
-        onChangeText={setContactName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Phone Number"
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-        keyboardType="phone-pad"
-      />
-
-      {/* Add Job Button */}
-      <TouchableOpacity style={styles.addButton} onPress={handleAddJob}>
-        <Text style={styles.addButtonText}>Add Job</Text>
-      </TouchableOpacity>
-    </KeyboardAwareScrollView>
+      </KeyboardAwareScrollView>
     </KeyboardAvoidingView >
   );
 }
@@ -130,21 +131,22 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   input: {
-    height: 50,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 15,
-    paddingHorizontal: 10,
+    backgroundColor: Colors.inputFieldBackground,
+    borderColor: Colors.inputFieldBorder,
+    borderRadius: 12,
+    padding: 16,
     fontSize: 16,
+    marginBottom: 16,
+    borderWidth: 1
   },
-  textArea: {
+    textArea: {
     height: 100,
-    borderColor: '#ccc',
+    backgroundColor: Colors.inputFieldBackground,
+    borderColor: Colors.inputFieldBorder,
     borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 15,
-    paddingHorizontal: 10,
+    borderRadius: 12,
+    marginBottom: 16,
+    padding: 16,
     fontSize: 16,
     textAlignVertical: 'top',
   },
