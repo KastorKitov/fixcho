@@ -1,8 +1,9 @@
 import { useRouter } from 'expo-router';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, ActivityIndicator, Platform } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
 export default function LoginScreen() {
     const [email, setEmail] = useState("");

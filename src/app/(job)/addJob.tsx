@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Colors } from '../../constants/colors'; // Assuming Colors is a predefined constant in your project
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 export default function AddJob() {
   const [title, setTitle] = useState('');
@@ -21,65 +22,68 @@ export default function AddJob() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        {/* Subtitle */}
-        <Text style={styles.subtitle}>What do you offer?</Text>
+      <KeyboardAwareScrollView
+        bottomOffset={10}
+        contentContainerStyle={styles.scrollViewContent}
+      >
+      {/* Subtitle */}
+      <Text style={styles.subtitle}>What do you offer?</Text>
 
-        {/* Image Container */}
-        <View style={styles.imageContainer}>
-          <TouchableOpacity style={styles.addImageButton}>
-            <Text style={styles.addImageText}>Add Picture</Text>
-          </TouchableOpacity>
-          {image && <Image source={{ uri: image }} style={styles.image} />}
-        </View>
-
-        {/* Input Fields */}
-        <TextInput
-          style={styles.input}
-          placeholder="Title"
-          value={title}
-          onChangeText={setTitle}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Category"
-          value={category}
-          onChangeText={setCategory}
-        />
-        <TextInput
-          style={styles.textArea}
-          placeholder="Description"
-          value={description}
-          onChangeText={setDescription}
-          multiline
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Contact Name"
-          value={contactName}
-          onChangeText={setContactName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Phone Number"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          keyboardType="phone-pad"
-        />
-
-        {/* Add Job Button */}
-        <TouchableOpacity style={styles.addButton} onPress={handleAddJob}>
-          <Text style={styles.addButtonText}>Add Job</Text>
+      {/* Image Container */}
+      <View style={styles.imageContainer}>
+        <TouchableOpacity style={styles.addImageButton}>
+          <Text style={styles.addImageText}>Add Picture</Text>
         </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        {image && <Image source={{ uri: image }} style={styles.image} />}
+      </View>
+
+      {/* Input Fields */}
+      <TextInput
+        style={styles.input}
+        placeholder="Title"
+        value={title}
+        onChangeText={setTitle}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Category"
+        value={category}
+        onChangeText={setCategory}
+      />
+      <TextInput
+        style={styles.textArea}
+        placeholder="Description"
+        value={description}
+        onChangeText={setDescription}
+        multiline
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Contact Name"
+        value={contactName}
+        onChangeText={setContactName}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Phone Number"
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
+        keyboardType="phone-pad"
+      />
+
+      {/* Add Job Button */}
+      <TouchableOpacity style={styles.addButton} onPress={handleAddJob}>
+        <Text style={styles.addButtonText}>Add Job</Text>
+      </TouchableOpacity>
+    </KeyboardAwareScrollView>
+    </KeyboardAvoidingView >
   );
 }
 

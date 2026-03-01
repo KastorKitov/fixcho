@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { ActivityIndicator, View } from 'react-native';
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 function RouteGuard() {
     const router = useRouter();
@@ -24,7 +25,7 @@ function RouteGuard() {
                 router.replace("/(auth)/onboarding");
             }
         } else {
-            if(inJobRoute) {
+            if (inJobRoute) {
             } else if (!inTabsRoute) {
                 router.replace('/(tabs)');
             }
@@ -41,11 +42,13 @@ function RouteGuard() {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="(auth)" />
-                <Stack.Screen name="(job)" />
-            </Stack>
+            <KeyboardProvider>
+                <Stack screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="(tabs)" />
+                    <Stack.Screen name="(auth)" />
+                    <Stack.Screen name="(job)" />
+                </Stack>
+            </KeyboardProvider>
         </SafeAreaView>
     )
 }

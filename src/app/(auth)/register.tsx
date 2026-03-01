@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, ActivityIndicator, Image, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, ActivityIndicator, Image, Platform, ScrollView } from 'react-native';
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useAuth } from '../../context/AuthContext';
 import { Colors } from '../../constants/colors';
 import { supabase } from '../../lib/supabase/client';
