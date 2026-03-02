@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
     },
     scrollViewContent: {
         padding: 20,
-        paddingBottom: 40, // To ensure content at the bottom is not hidden
+        paddingBottom: 80
     },
     subtitle: {
         fontSize: 24,
