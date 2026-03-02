@@ -1,8 +1,9 @@
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { AuthProvider, useAuth } from '../context/AuthContext';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, StatusBar } from 'react-native';
 import { KeyboardProvider } from "react-native-keyboard-controller";
+import { Colors } from '../constants/colors';
 
 function RouteGuard() {
     const router = useRouter();
@@ -44,6 +45,7 @@ function RouteGuard() {
 
     return (
         <KeyboardProvider>
+            <StatusBar backgroundColor={Colors.button} />
             <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(tabs)" />
                 <Stack.Screen name="(auth)" />

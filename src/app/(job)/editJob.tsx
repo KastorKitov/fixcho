@@ -69,8 +69,6 @@ export default function EditJob() {
         );
     }
 
-    console.log("Editing job:", job);
-
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== "granted") {

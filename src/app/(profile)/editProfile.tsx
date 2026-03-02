@@ -146,9 +146,9 @@ export default function EditProfileScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1}} edges={['left', 'right']}>
       <KeyboardAwareScrollView
-        style={styles.container}
+        keyboardShouldPersistTaps="handled"
       >
         <View style={styles.content}>
           <View style={styles.header}>
@@ -248,7 +248,7 @@ export default function EditProfileScreen() {
                     style={[
                       styles.label,
                       role === "professional" &&
-                        styles.selectedText,
+                      styles.selectedText,
                     ]}
                   >
                     Professional
@@ -277,14 +277,10 @@ export default function EditProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
   content: {
-    flex: 1,
     justifyContent: "center",
     padding: 24,
-    paddingBottom: 48
+    paddingBottom: 50,
   },
   header: {
     marginBottom: 32
