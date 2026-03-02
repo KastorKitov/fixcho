@@ -251,5 +251,5 @@ export const useJobs = () => {
     }
   };
 
-  return { createJob, jobs, refreshJobs, deactivateJob, reactivateJob, updateJob, userJobs };
+  return { createJob, jobs, refreshJobs, deactivateJob, reactivateJob, updateJob, userJobs, isLoading };
 };

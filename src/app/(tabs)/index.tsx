@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, RefreshControl, ActivityIndicator } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { useRouter } from 'expo-router';
 import { Job, useJobs } from '../../hooks/useJobs';
@@ -26,7 +26,12 @@ const JobCard = ({ job }: JobCardProps) => {
       <View style={styles.jobItemContainer}>
         <View style={styles.jobContentContainer}>
           {job.image_url ? (
-            <Image source={{ uri: job.image_url }} style={styles.jobImage} />
+            <Image
+              source={{ uri: job.image_url }}
+              style={styles.jobImage}
+              contentFit="cover"
+              transition={300}
+            />
           ) : (
             <Image source={require('../../../assets/myicon/no_job_photo.png')} style={styles.jobImage} />
           )}
@@ -55,7 +60,7 @@ export default function Index() {
 
 
   const router = useRouter();
-  const { jobs, refreshJobs } = useJobs();
+  const { jobs, refreshJobs, isLoading } = useJobs();
 
   const onRefresh = async () => {
     setRefreshing(true)
@@ -75,19 +80,27 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'top']}>
-        <View style={styles.jobHeader}>
-          <Text style={{ color: '#fff', fontSize: 18, fontWeight: 'bold' }}>Available Jobs</Text>
-        </View>
+      <View style={styles.jobHeader}>
+        <Text style={{ color: '#fff', fontSize: 18, fontWeight: 'bold' }}>Available Jobs</Text>
+      </View>
+      {isLoading ? (
+        <ActivityIndicator size="large" color={Colors.button} style={{ marginTop: 40 }} />
+      ) : (
         <FlatList
           data={jobs}
           renderItem={renderJob}
           keyExtractor={(item) => item.id}
-          ListEmptyComponent={<Text>No jobs found</Text>}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No jobs available yet.</Text>
+            </View>
+          }
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         />
-        <TouchableOpacity style={styles.plusButton} onPress={() => router.push('/(job)/addJob')}>
-          <Text style={styles.plusButtonText}>+</Text>
-        </TouchableOpacity>
+      )}
+      <TouchableOpacity style={styles.plusButton} onPress={() => router.push('/(job)/addJob')}>
+        <Text style={styles.plusButtonText}>+</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -130,7 +143,7 @@ const styles = StyleSheet.create({
   },
   jobHeader: {
     backgroundColor: Colors.button,
-    padding: 5,
+    paddingVertical: 6,
     alignItems: 'center',
   },
   jobContentContainer: {
@@ -165,5 +178,13 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 4,
     marginBottom: 10,
-  }
+  },
+  emptyContainer: {
+    alignItems: "center",
+    marginTop: 40,
+  },
+  emptyText: {
+    color: "#999",
+    fontSize: 16,
+  },
 });

@@ -120,6 +120,11 @@ export default function SignUpScreen() {
       return;
     }
 
+    if (/\s/.test(username)) {
+      Alert.alert("Invalid username", "Username cannot contain spaces.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -130,7 +135,7 @@ export default function SignUpScreen() {
         .select("id")
         .eq("username", username)
         .neq("id", user.id)
-        .single();
+        .maybeSingle();
 
       if (existingUser) {
         Alert.alert(
@@ -221,7 +226,10 @@ export default function SignUpScreen() {
               placeholder="Username"
               placeholderTextColor={Colors.placeholderText}
               value={username}
-              onChangeText={setUsername}
+              onChangeText={(text) => {
+                const cleaned = text.replace(/\s/g, "");
+                setUsername(cleaned);
+              }}
               autoCapitalize="none"
               autoComplete="username"
             />
@@ -259,8 +267,13 @@ export default function SignUpScreen() {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.button}
+            <TouchableOpacity
+              style={[
+                styles.button,
+                isLoading && { opacity: 0.7 }
+              ]}
               onPress={handleComplete}
+              disabled={isLoading}
             >
               {isLoading ? (
                 <ActivityIndicator size={24} color="#fff" />

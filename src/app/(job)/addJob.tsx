@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import * as ImagePicker from "expo-image-picker";
@@ -26,6 +26,7 @@ export default function AddJob() {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [location, setLocation] = useState(user?.location || '');
+  const [isLoading, setIsLoading] = useState(false);
 
   const { createJob } = useJobs();
   const router = useRouter();
@@ -183,6 +184,8 @@ export default function AddJob() {
     const isValid = validateFields();
     if (!isValid) return;
 
+    setIsLoading(true);
+
     try {
       await createJob(title, email, image || '', category, description, location, negotiable, minPrice, maxPrice, contactName, phoneNumber);
       setTitle('');
@@ -200,13 +203,15 @@ export default function AddJob() {
     } catch (error) {
       Alert.alert("Error", "There was an error adding your job. Please try again.");
       return;
+    } finally {
+      setIsLoading(false);
     }
 
     Alert.alert("Job Added", "Your job has been successfully added!");
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['left','right']}>
+    <SafeAreaView style={{ flex: 1 }} edges={['left', 'right']}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
@@ -369,6 +374,8 @@ export default function AddJob() {
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
             />
           </FormField>
           <FormField label="Phone Number">
@@ -382,9 +389,16 @@ export default function AddJob() {
             />
           </FormField>
 
-          {/* Add Job Button */}
-          <TouchableOpacity style={styles.addButton} onPress={handleAddJob}>
-            <Text style={styles.addButtonText}>Add Job</Text>
+          <TouchableOpacity
+            style={[styles.addButton, isLoading && { opacity: 0.7 }]}
+            onPress={handleAddJob}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#fff" size={24} />
+            ) : (
+              <Text style={styles.addButtonText}>Add Job</Text>
+            )}
           </TouchableOpacity>
         </KeyboardAwareScrollView>
       </KeyboardAvoidingView >

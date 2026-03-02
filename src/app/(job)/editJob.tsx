@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import { useJobs } from "../../hooks/useJobs";
-import { useAuth } from "../../context/AuthContext";
 import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
@@ -25,7 +24,6 @@ import Slider from "@react-native-community/slider";
 export default function EditJob() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const { jobs, userJobs, updateJob } = useJobs();
-    const { user } = useAuth();
     const router = useRouter();
 
     const job =
@@ -44,6 +42,7 @@ export default function EditJob() {
     const [minPrice, setMinPrice] = useState("");
     const [maxPrice, setMaxPrice] = useState("");
     const [location, setLocation] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (job) {
@@ -101,8 +100,6 @@ export default function EditJob() {
         }
 
         const result = await ImagePicker.launchCameraAsync({
-            //allowsEditing: true,
-            // aspect: [1, 1],
             quality: 0.8,
         });
         if (!result.canceled && result.assets[0]) {
@@ -133,7 +130,7 @@ export default function EditJob() {
     };
 
     const isValidPhone = (phone: string) => {
-        if (!phone) return true; // optional field
+        if (!phone) return true;
         const phoneRegex = /^[0-9+\-\s()]{6,20}$/;
         return phoneRegex.test(phone);
     };
@@ -221,7 +218,9 @@ export default function EditJob() {
 
         const isValid = validateFields();
         if (!isValid) return;
-        
+
+        setIsLoading(true);
+
         try {
             await updateJob(
                 job.id,
@@ -242,6 +241,8 @@ export default function EditJob() {
             router.back();
         } catch (error) {
             Alert.alert("Error", "Failed to update job.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -409,6 +410,8 @@ export default function EditJob() {
                             value={email}
                             onChangeText={setEmail}
                             keyboardType="email-address"
+                            autoCapitalize="none"
+                            autoCorrect={false}
                         />
                     </FormField>
                     <FormField label="Phone Number">
@@ -422,9 +425,16 @@ export default function EditJob() {
                         />
                     </FormField>
 
-                    {/* Update Job Button */}
-                    <TouchableOpacity style={styles.addButton} onPress={handleUpdate}>
-                        <Text style={styles.addButtonText}>Edit Job</Text>
+                    <TouchableOpacity
+                        style={[styles.addButton, isLoading && { opacity: 0.7 }]}
+                        onPress={handleUpdate}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <ActivityIndicator color="#fff" size={24} />
+                        ) : (
+                            <Text style={styles.addButtonText}>Edit Job</Text>
+                        )}
                     </TouchableOpacity>
                 </KeyboardAwareScrollView>
             </KeyboardAvoidingView >

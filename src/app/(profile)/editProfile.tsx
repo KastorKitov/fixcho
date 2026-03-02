@@ -81,8 +81,13 @@ export default function EditProfileScreen() {
       return;
     }
 
-    if (!username.trim() || username.length < 3) {
-      Alert.alert("Error", "Username must be at least 3 characters");
+    const cleanUsername = username.trim().toLowerCase();
+
+    if (!/^[a-z0-9._]+$/.test(cleanUsername)) {
+      Alert.alert(
+        "Invalid username",
+        "Username can only contain letters, numbers, dots and underscores."
+      );
       return;
     }
 
@@ -102,20 +107,23 @@ export default function EditProfileScreen() {
       if (!user) throw new Error("User not authenticated");
 
       // Check username uniqueness
-      const { data: existingUser } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("username", username)
-        .neq("id", user.id)
-        .single();
+      const usernameChanged = cleanUsername !== user.username;
+      if (usernameChanged) {
+        const { data: existingUser } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("username", cleanUsername)
+          .neq("id", user.id)
+          .maybeSingle();
 
-      if (existingUser) {
-        Alert.alert(
-          "Error",
-          "This username is already taken. Please choose another one."
-        );
-        setIsLoading(false);
-        return;
+        if (existingUser) {
+          Alert.alert(
+            "Error",
+            "This username is already taken. Please choose another one."
+          );
+          setIsLoading(false);
+          return;
+        }
       }
 
       let profileImageUrl = profileImage;
@@ -146,7 +154,7 @@ export default function EditProfileScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1}} edges={['left', 'right']}>
+    <SafeAreaView style={{ flex: 1 }} edges={['left', 'right']}>
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps="handled"
       >
@@ -196,6 +204,8 @@ export default function EditProfileScreen() {
               value={username}
               onChangeText={setUsername}
               autoCapitalize="none"
+              autoCorrect={false}
+              spellCheck={false}
             />
 
             <TextInput
@@ -213,6 +223,8 @@ export default function EditProfileScreen() {
               value={phoneNumber}
               onChangeText={setPhoneNumber}
               keyboardType="phone-pad"
+              autoCorrect={false}
+              spellCheck={false}
             />
 
             <View style={{ alignItems: "center", marginBottom: 10 }}>
@@ -260,6 +272,7 @@ export default function EditProfileScreen() {
             <TouchableOpacity
               style={styles.button}
               onPress={handleSave}
+              disabled={isLoading}
             >
               {isLoading ? (
                 <ActivityIndicator size={24} color="#fff" />

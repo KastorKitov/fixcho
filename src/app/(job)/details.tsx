@@ -15,12 +15,13 @@ import { Colors } from "../../constants/colors";
 import { formatTimeAgo } from "../../lib/date-helper";
 import { useAuth } from '../../context/AuthContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 export default function JobDetails() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const { jobs, userJobs, deactivateJob, reactivateJob, refreshJobs } = useJobs();
     const { user } = useAuth();
+    const [actionLoading, setActionLoading] = useState(false);
 
     const job =
         jobs.find((j) => j.id === id) ||
@@ -36,9 +37,9 @@ export default function JobDetails() {
 
     if (!job) {
         return (
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <ActivityIndicator size="large" />
-            </View>
+            <SafeAreaView style={styles.center}>
+                <ActivityIndicator size="large" color={Colors.button} />
+            </SafeAreaView>
         );
     }
 
@@ -68,10 +69,13 @@ export default function JobDetails() {
                     style: "destructive",
                     onPress: async () => {
                         try {
+                            setActionLoading(true);
                             await deactivateJob(job.id);
                             router.replace("/(tabs)");
                         } catch (error) {
                             Alert.alert("Error", "Failed to deactivate job.");
+                        } finally {
+                            setActionLoading(false);
                         }
                     },
                 },
@@ -90,10 +94,13 @@ export default function JobDetails() {
                     style: "default",
                     onPress: async () => {
                         try {
+                            setActionLoading(true);
                             await reactivateJob(job.id);
                             router.replace("/(tabs)");
                         } catch (error) {
                             Alert.alert("Error", "Failed to reactivate job.");
+                        } finally {
+                            setActionLoading(false);
                         }
                     },
                 },
@@ -175,10 +182,15 @@ export default function JobDetails() {
                     {isOwner && (
                         <View style={styles.ownerActions}>
                             <TouchableOpacity
-                                style={[styles.actionButton, styles.editButton]}
+                                style={[styles.actionButton, styles.editButton, actionLoading && { opacity: 0.7 }]}
                                 onPress={handleEdit}
+                                disabled={actionLoading}
                             >
-                                <Text style={styles.actionText}>Edit</Text>
+                                {actionLoading ? (
+                                    <ActivityIndicator color="#fff" />
+                                ) : (
+                                    <Text style={styles.actionText}>Edit</Text>
+                                )}
                             </TouchableOpacity>
 
                             <TouchableOpacity
@@ -186,13 +198,19 @@ export default function JobDetails() {
                                     styles.actionButton,
                                     job.is_active
                                         ? styles.deactivateButton
-                                        : styles.activateButton
+                                        : styles.activateButton,
+                                    actionLoading && { opacity: 0.7 }
                                 ]}
                                 onPress={job.is_active ? handleDeactivate : handleReactivate}
+                                disabled={actionLoading}
                             >
-                                <Text style={styles.actionText}>
-                                    {job.is_active ? "Deactivate" : "Activate"}
-                                </Text>
+                                {actionLoading ? (
+                                    <ActivityIndicator color="#fff" />
+                                ) : (
+                                    <Text style={styles.actionText}>
+                                        {job.is_active ? "Deactivate" : "Activate"}
+                                    </Text>
+                                )}
                             </TouchableOpacity>
                         </View>
                     )}

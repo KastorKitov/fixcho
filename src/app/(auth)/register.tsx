@@ -47,6 +47,8 @@ export default function RegisterScreen() {
             return;
         }
 
+        setIsLoading(true);
+
         // 4. Check if email is already in use
         const { data, error } = await supabase
             .from("profiles")
@@ -61,8 +63,6 @@ export default function RegisterScreen() {
             return;
         }
 
-        setIsLoading(true);
-
         try {
             await signUp(email, password);
             router.push('/(auth)/onboarding');
@@ -76,56 +76,63 @@ export default function RegisterScreen() {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.container}
-        >
-            <ScrollView contentContainerStyle={styles.content}>
-                <View style={styles.imageContainer}>
-                    <Image source={require("../../../assets/myicon/fixcho_logo_blueberry.png")} style={{ width: 400, height: 200 }} />
-                </View>
-                <Text style={styles.title}>Welcome</Text>
-                <Text style={styles.subtitle}>Sign Up to Get Started</Text>
-                <View style={styles.inputForm}>
-                    <TextInput
-                        placeholder="Email..."
-                        placeholderTextColor={Colors.placeholderText}
-                        keyboardType="email-address"
-                        autoComplete="email"
-                        autoCapitalize="none"
-                        value={email}
-                        onChangeText={setEmail}
-                        style={styles.inputField}
-                    />
-                    <TextInput
-                        placeholder="Password"
-                        placeholderTextColor={Colors.placeholderText}
-                        autoComplete="password"
-                        secureTextEntry
-                        autoCapitalize="none"
-                        value={password}
-                        onChangeText={setPassword}
-                        style={styles.inputField}
-                    />
-                    <TextInput
-                        placeholder="Confirm Password"
-                        placeholderTextColor={Colors.placeholderText}
-                        autoComplete="password"
-                        secureTextEntry
-                        autoCapitalize="none"
-                        value={confirmPassword}
-                        onChangeText={setConfirmPassword}
-                        style={styles.inputField}
-                    />
-                </View>
-                <TouchableOpacity style={styles.loginButton} onPress={handleSignUp}>
-                    {isLoading ? (<ActivityIndicator color="#fff" size={24} />) : (<Text style={styles.loginButtonText}>Sign Up</Text>)}
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.signUpText} onPress={() => router.back()}>
-                    <Text style={styles.signUpButtonText}>Already have an account? <Text style={styles.signUpButtonTextBold}>Sign In</Text></Text>
-                </TouchableOpacity>
-            </ScrollView>
-        </KeyboardAvoidingView>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.container}
+            >
+                <ScrollView contentContainerStyle={styles.content}>
+                    <View style={styles.imageContainer}>
+                        <Image source={require("../../../assets/myicon/fixcho_logo_blueberry.png")} style={{ width: 400, height: 200 }} />
+                    </View>
+                    <Text style={styles.title}>Welcome</Text>
+                    <Text style={styles.subtitle}>Sign Up to Get Started</Text>
+                    <View style={styles.inputForm}>
+                        <TextInput
+                            placeholder="Email..."
+                            placeholderTextColor={Colors.placeholderText}
+                            keyboardType="email-address"
+                            autoComplete="email"
+                            autoCapitalize="none"
+                            value={email}
+                            onChangeText={setEmail}
+                            style={styles.inputField}
+                        />
+                        <TextInput
+                            placeholder="Password"
+                            placeholderTextColor={Colors.placeholderText}
+                            autoComplete="password"
+                            secureTextEntry
+                            autoCapitalize="none"
+                            value={password}
+                            onChangeText={setPassword}
+                            style={styles.inputField}
+                        />
+                        <TextInput
+                            placeholder="Confirm Password"
+                            placeholderTextColor={Colors.placeholderText}
+                            autoComplete="password"
+                            secureTextEntry
+                            autoCapitalize="none"
+                            value={confirmPassword}
+                            onChangeText={setConfirmPassword}
+                            style={styles.inputField}
+                        />
+                    </View>
+                    <TouchableOpacity
+                        style={[
+                            styles.loginButton,
+                            isLoading && { opacity: 0.7 }
+                        ]}
+                        onPress={handleSignUp}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (<ActivityIndicator color="#fff" size={24} />) : (<Text style={styles.loginButtonText}>Sign Up</Text>)}
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.signUpText} onPress={() => router.back()} disabled={isLoading}>
+                        <Text style={styles.signUpButtonText}>Already have an account? <Text style={styles.signUpButtonTextBold}>Sign In</Text></Text>
+                    </TouchableOpacity>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 }
@@ -138,7 +145,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         padding: 24,
-        paddingBottom: 120, // To ensure content at the bottom is not hidden
+        paddingBottom: 120,
     },
     imageContainer: {
         alignItems: "center",

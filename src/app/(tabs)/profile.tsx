@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     ScrollView,
     Alert,
+    RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
@@ -127,7 +128,15 @@ export default function Profile() {
 
     return (
         <SafeAreaView style={styles.container} edges={['left', 'right', 'top']}>
-            <ScrollView contentContainerStyle={styles.content}>
+            <ScrollView
+                contentContainerStyle={styles.content}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={false}
+                        onRefresh={refreshJobs}
+                    />
+                }
+            >
                 <View style={styles.profileSection}>
                     <TouchableOpacity
                         onPress={handleUpdateProfileImage}

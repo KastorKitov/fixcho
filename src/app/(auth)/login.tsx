@@ -27,8 +27,7 @@ export default function LoginScreen() {
             await signIn(email, password);
             router.push('/(tabs)');
         } catch (error) {
-            console.error(error);
-            Alert.alert("Sign in failed. Please try again.");
+            Alert.alert("Sign in failed. Wrong Credentials. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -67,14 +66,21 @@ export default function LoginScreen() {
                             style={styles.inputField}
                         />
                     </View>
-                    <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                    <TouchableOpacity
+                        style={[
+                            styles.loginButton,
+                            isLoading && { opacity: 0.7 }
+                        ]}
+                        onPress={handleLogin}
+                        disabled={isLoading}
+                    >
                         {isLoading ? (
                             <ActivityIndicator color={Colors.buttonText} />
                         ) : (
                             <Text style={styles.loginButtonText}>Sign In</Text>
                         )}
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.signUpText} onPress={() => router.push("/(auth)/register")}>
+                    <TouchableOpacity style={styles.signUpText} onPress={() => router.push("/(auth)/register")} disabled={isLoading}>
                         <Text style={styles.signUpButtonText}>Don't have an account? <Text style={styles.signUpButtonTextBold}>Sign Up</Text></Text>
                     </TouchableOpacity>
                 </View>
