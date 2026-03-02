@@ -27,7 +27,7 @@ export default function LoginScreen() {
             await signIn(email, password);
             router.push('/(tabs)');
         } catch (error) {
-            Alert.alert("Sign in failed. Wrong Credentials. Please try again.");
+            Alert.alert("Sign in failed.","Wrong Credentials. Please try again.");
         } finally {
             setIsLoading(false);
         }

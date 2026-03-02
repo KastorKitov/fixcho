@@ -285,6 +285,10 @@ export default function AddJob() {
               value={negotiable}
               onValueChange={setNegotiable}
               thumbColor={Colors.button}
+              trackColor={{
+                false: Colors.placeholderText,
+                true: Colors.button,
+              }}
             />
           </View>
 
