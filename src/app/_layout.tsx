@@ -10,26 +10,29 @@ function RouteGuard() {
     const segments = useSegments();
 
     const inAuthRoute = segments[0] === "(auth)";
-    const inTabsRoute = segments[0] === "(tabs)";
-    const inJobRoute = segments[0] === "(job)";
 
     useEffect(() => {
         if (isLoading) return;
+
         if (!user) {
             if (!inAuthRoute) {
                 router.replace('/(auth)/login');
             }
-        } else if (!user.onboardingCompleted) {
+            return;
+        }
+
+        if (!user.onboardingCompleted) {
             if (segments.join("/") !== "(auth)/onboarding") {
                 router.replace("/(auth)/onboarding");
             }
-        } else {
-            if (inJobRoute) {
-            } else if (!inTabsRoute) {
-                router.replace('/(tabs)');
-            }
+            return;
         }
-    }, [segments, user, router]);
+
+        if (inAuthRoute) {
+            router.replace('/(tabs)');
+        }
+
+    }, [segments, user, isLoading]);
 
     if (isLoading) {
         return (
@@ -40,13 +43,14 @@ function RouteGuard() {
     }
 
     return (
-            <KeyboardProvider>
-                <Stack screenOptions={{ headerShown: false }}>
-                    <Stack.Screen name="(tabs)" />
-                    <Stack.Screen name="(auth)" />
-                    <Stack.Screen name="(job)" />
-                </Stack>
-            </KeyboardProvider>
+        <KeyboardProvider>
+            <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="(auth)" />
+                <Stack.Screen name="(job)" />
+                <Stack.Screen name="(profile)" />
+            </Stack>
+        </KeyboardProvider>
     )
 }
 
