@@ -10,10 +10,11 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
-import { uploadProfileImage } from "../..//lib/supabase/storage";
+import { uploadProfileImage } from "../../lib/supabase/storage";
 import { useCallback, useState } from "react";
 import { useFocusEffect, useRouter } from "expo-router";
 import { Job, useJobs } from "../../hooks/useJobs";
+import { Colors } from "../../constants/colors";
 
 const MyJobCard = ({ job }: { job: Job }) => {
     const router = useRouter();
@@ -135,9 +136,9 @@ export default function Profile() {
                         <View>
                             {user?.profileImage ? (
                                 <Image
-                                    source={{ uri: user.profileImage }}
+                                    source={{ uri: `${user.profileImage}?t=${Date.now()}` }}
                                     style={styles.profileImage}
-                                    cachePolicy={"none"}
+                                    cachePolicy="none"
                                 />
                             ) : (
                                 <View
@@ -160,7 +161,10 @@ export default function Profile() {
                 </View>
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Account</Text>
-                    <TouchableOpacity style={styles.settingItem}>
+                    <TouchableOpacity
+                        style={styles.settingItem}
+                        onPress={() => router.push("/(profile)/editProfile")}
+                    >
                         <Text style={styles.settingLabel}>Edit Profile</Text>
                         <Text style={styles.settingValue}>→</Text>
                     </TouchableOpacity>
@@ -169,6 +173,7 @@ export default function Profile() {
                         onPress={handleSignOut}
                     >
                         <Text style={styles.signOutText}>Sign Out</Text>
+                        <Text style={styles.settingValue}>→</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.section}>
@@ -191,7 +196,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
     },
     content: {
-        padding: 32,
+        padding: 32
     },
     profileSection: {
         alignItems: "center",
@@ -221,7 +226,7 @@ const styles = StyleSheet.create({
         bottom: 10,
         left: "50%",
         transform: [{ translateX: -22 }],
-        backgroundColor: "#000",
+        backgroundColor: Colors.button,
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 16,
@@ -267,20 +272,19 @@ const styles = StyleSheet.create({
     },
     settingLabel: {
         fontSize: 18,
-        color: "#999",
+        color: "#333",
     },
     settingValue: {
         fontSize: 18,
-        color: "#999",
+        color: "#333",
     },
     signOutButton: {
         backgroundColor: "#f5f5f5",
         marginBottom: 8,
     },
     signOutText: {
-        fontSize: 16,
-        color: "#000",
-        fontWeight: "500",
+        fontSize: 18,
+        color: "#333"
     },
     deleteButton: {
         backgroundColor: "#fff",
