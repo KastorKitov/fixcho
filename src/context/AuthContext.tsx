@@ -9,6 +9,8 @@ export interface User {
     role: string;
     profileImage?: string;
     onboardingCompleted?: boolean;
+    location: string;
+    phoneNumber: string;
 }
 
 interface AuthContextType {
@@ -82,6 +84,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 role: data.role,
                 profileImage: data.profile_image_url,
                 onboardingCompleted: data.onboarding_completed,
+                location: data.location,
+                phoneNumber: data.phone_number,
             };
         } catch (error) {
             console.error("Error fetching user profile:", error);
@@ -130,6 +134,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             if (userData.role !== undefined) updateData.role = userData.role;
             if (userData.profileImage !== undefined) updateData.profile_image_url = userData.profileImage;
             if (userData.onboardingCompleted !== undefined) updateData.onboarding_completed = userData.onboardingCompleted;
+            if (userData.location !== undefined) updateData.location = userData.location;
+            if (userData.phoneNumber !== undefined) updateData.phone_number = userData.phoneNumber;
 
             const { error } = await supabase.from("profiles").update(updateData).eq("id", user.id);
             if (error) {

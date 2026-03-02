@@ -25,6 +25,8 @@ export default function SignUpScreen() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const { user, updateUser } = useAuth();
   const [role, setRole] = useState('user');
+  const [location, setLocation] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const router = useRouter();
 
@@ -80,21 +82,48 @@ export default function SignUpScreen() {
       { text: "Cancel", style: "cancel" },
     ]);
   };
+
+  const isValidPhone = (phone: string) => {
+    const phoneRegex = /^[0-9+\-\s()]{6,20}$/;
+    return phoneRegex.test(phone);
+  };
+
   const handleComplete = async () => {
-    if (!name || !username) {
-      Alert.alert("Error", "Please fill in all fields");
+    if (!name.trim()) {
+      Alert.alert("Error", "Full name is required");
+      return;
     }
 
-    if (username.length < 3) {
+    if (!username.trim()) {
+      Alert.alert("Error", "Username is required");
+      return;
+    }
+
+    if (username.trim().length < 3) {
       Alert.alert("Error", "Username must be at least 3 characters");
+      return;
+    }
+
+    if (!location.trim()) {
+      Alert.alert("Error", "Location is required");
+      return;
+    }
+
+    if (!phoneNumber.trim()) {
+      Alert.alert("Error", "Phone number is required");
+      return;
+    }
+
+    if (!isValidPhone(phoneNumber.trim())) {
+      Alert.alert("Error", "Please enter a valid phone number");
+      return;
     }
 
     setIsLoading(true);
+
     try {
-      if (!user) {
-        throw new Error("User not authenticated");
-      }
-      // Check if username exists
+      if (!user) throw new Error("User not authenticated");
+
       const { data: existingUser } = await supabase
         .from("profiles")
         .select("id")
@@ -105,44 +134,41 @@ export default function SignUpScreen() {
       if (existingUser) {
         Alert.alert(
           "Error",
-          "This username is already taken. Please choose another one.",
+          "This username is already taken. Please choose another one."
         );
         setIsLoading(false);
         return;
       }
 
-      //Upload profile img
       let profileImageUrl: string | undefined;
       if (profileImage) {
         try {
           profileImageUrl = await uploadProfileImage(user.id, profileImage);
         } catch (error) {
-          console.error("Error uploading profile image:", error);
           Alert.alert(
             "Warning",
-            "Failed to upload profile image. Continuing without image.",
+            "Failed to upload profile image. Continuing without image."
           );
         }
       }
 
-      //Update profile
       await updateUser({
-        name,
-        username,
+        name: name.trim(),
+        username: username.trim(),
         email: user.email,
         profileImage: profileImageUrl,
         onboardingCompleted: true,
-        role: role
+        role: role,
+        location: location.trim(),
+        phoneNumber: phoneNumber.trim(),
       });
 
       router.replace("/(tabs)");
-
     } catch (error) {
       Alert.alert(
         "Error",
-        "Failed to complete the onboarding. Please try again.",
+        "Failed to complete the onboarding. Please try again."
       );
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -180,7 +206,6 @@ export default function SignUpScreen() {
               <Text style={styles.editText}>Edit</Text>
             </View>
           </TouchableOpacity>
-
           <TextInput
             style={styles.input}
             placeholder="Full Name"
@@ -189,7 +214,6 @@ export default function SignUpScreen() {
             onChangeText={setName}
             autoCapitalize="words"
           />
-
           <TextInput
             style={styles.input}
             placeholder="Username"
@@ -198,6 +222,21 @@ export default function SignUpScreen() {
             onChangeText={setUsername}
             autoCapitalize="none"
             autoComplete="username"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Location"
+            placeholderTextColor={Colors.placeholderText}
+            value={location}
+            onChangeText={setLocation}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Phone Number"
+            placeholderTextColor={Colors.placeholderText}
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            keyboardType="phone-pad"
           />
           <View style={{ alignItems: 'center', marginBottom: 10 }}>
             <Text style={styles.radioTitleText}>I am:</Text>
@@ -352,7 +391,7 @@ const styles = StyleSheet.create({
     //position: 'relative',
   },
   selectedBox: {
-    backgroundColor: "#9eb40a"
+    backgroundColor: "#8089d2"
   },
   label: {
     fontSize: 16,

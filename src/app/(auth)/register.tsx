@@ -80,7 +80,7 @@ export default function RegisterScreen() {
         >
             <ScrollView contentContainerStyle={styles.content}>
                 <View style={styles.imageContainer}>
-                    <Image source={require("../../../assets/myicon/fixcho_logo_1.png")} style={{ width: 400, height: 200 }} />
+                    <Image source={require("../../../assets/myicon/fixcho_logo_blueberry.png")} style={{ width: 400, height: 200 }} />
                 </View>
                 <Text style={styles.title}>Welcome</Text>
                 <Text style={styles.subtitle}>Sign Up to Get Started</Text>
