@@ -10,7 +10,7 @@ https://drive.google.com/file/d/1Hgy6_gNCZyWGJSfdAlawYBnbpGdFGFVi/view?usp=shari
 ## Installation Guide
 Im using: 
 - Expo Go SDK55!
-for starting the app i use: npx expo start
+- for starting the app i use: npx expo start
 
 ## Functional Guide
 1. Project Overview
@@ -28,7 +28,7 @@ for starting the app i use: npx expo start
 - Authentication Flow
 - Explain step-by-step: 
 1. What happens when the app starts: 
--it loads the login screen. 
+- it loads the login screen. 
 2. How authentication status is checked: 
 - auth status is checked in AuthContext by the method checkSession, which gets the session via supabase. 
 3. What happens on successful login or registration: 
