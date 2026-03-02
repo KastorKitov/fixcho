@@ -250,7 +250,7 @@ export default function AddJob() {
           <FormField label="Description" required>
             <TextInput
               style={styles.textArea}
-              placeholder="Write what you need for the job"
+              placeholder="Write what you need to be done"
               value={description}
               onChangeText={setDescription}
               multiline

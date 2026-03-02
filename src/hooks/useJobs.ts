@@ -78,8 +78,8 @@ export const useJobs = () => {
     }
   };
   const createJob = async (
-    title: string, email: string, imageUri?: string, category?: string, 
-    description?: string, location?: string, negotiable?: boolean, minPrice?: string, maxPrice?: string, 
+    title: string, email: string, imageUri?: string, category?: string,
+    description?: string, location?: string, negotiable?: boolean, minPrice?: string, maxPrice?: string,
     contactName?: string, phoneNumber?: string) => {
     if (!user) {
       throw new Error("User not authenticated");
@@ -138,5 +138,43 @@ export const useJobs = () => {
     await loadJobs();
   };
 
-  return { createJob, jobs, refreshJobs };
+  const deactivateJob = async (jobId: string) => {
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    try {
+      const { error } = await supabase
+        .from("jobs")
+        .update({ is_active: false })
+        .eq("id", jobId)
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error("Error deactivating job:", error);
+        throw error;
+      }
+
+      await loadJobs();
+    } catch (error) {
+      console.error("Error in deactivateJob:", error);
+      throw error;
+    }
+  };
+
+  const reactivateJob = async (jobId: string) => {
+    if (!user) throw new Error("User not authenticated");
+
+    const { error } = await supabase
+      .from("jobs")
+      .update({ is_active: true })
+      .eq("id", jobId)
+      .eq("user_id", user.id);
+
+    if (error) throw error;
+
+    await loadJobs();
+  };
+
+  return { createJob, jobs, refreshJobs, deactivateJob, reactivateJob };
 };

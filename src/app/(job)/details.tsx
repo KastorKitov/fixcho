@@ -17,7 +17,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function JobDetails() {
     const { id } = useLocalSearchParams<{ id: string }>();
-    const { jobs } = useJobs();
+    const { jobs, deactivateJob } = useJobs();
     const { user } = useAuth();
 
     const job = jobs.find((j) => j.id === id);
@@ -49,21 +49,21 @@ export default function JobDetails() {
         });
     };
 
-    const handleDelete = () => {
+    const handleDeactivate = () => {
         Alert.alert(
-            "Delete Job",
-            "Are you sure you want to delete this job?",
+            "Deactivate Job",
+            "Are you sure you want to deactivate this job?",
             [
                 { text: "Cancel", style: "cancel" },
                 {
-                    text: "Delete",
+                    text: "Deactivate",
                     style: "destructive",
                     onPress: async () => {
                         try {
-                            //await deleteJob(job.id); // make sure you have this in useJobs
+                            await deactivateJob(job.id);
                             router.replace("/(tabs)");
                         } catch (error) {
-                            Alert.alert("Error", "Failed to delete job.");
+                            Alert.alert("Error", "Failed to deactivate job.");
                         }
                     },
                 },
@@ -152,10 +152,10 @@ export default function JobDetails() {
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                style={[styles.actionButton, styles.deleteButton]}
-                                onPress={handleDelete}
+                                style={[styles.actionButton, styles.deactivateButton]}
+                                onPress={handleDeactivate}
                             >
-                                <Text style={styles.actionText}>Delete</Text>
+                                <Text style={styles.actionText}>Deactivate</Text>
                             </TouchableOpacity>
                         </View>
                     )}
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.button
     },
 
-    deleteButton: {
+    deactivateButton: {
         backgroundColor: Colors.deleteButton
     },
 
