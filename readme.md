@@ -1,8 +1,8 @@
 # fixcho
 React Native Course Project 
 
-## Link to APK //TODO
-https://drive.google.com/file/d/1ZliHOsSJzk4G6tZ4-BGkVEmmtsxnyqs8/view?usp=sharing
+## Link to APK
+https://drive.google.com/file/d/1Hgy6_gNCZyWGJSfdAlawYBnbpGdFGFVi/view?usp=sharing
 
 ## Walkthrough Tutorial (optional)
 *give simple directions on how to navigate, login and use the main app features*
