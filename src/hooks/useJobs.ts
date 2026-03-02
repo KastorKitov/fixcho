@@ -41,7 +41,7 @@ export const useJobs = () => {
     loadUserJobs();
   }, []);
 
-  const loadPublicJobs  = async () => {
+  const loadPublicJobs = async () => {
     if (!user) return;
 
     setIsLoading(true);
@@ -81,22 +81,22 @@ export const useJobs = () => {
   };
 
   const loadUserJobs = async () => {
-  if (!user) return;
+    if (!user) return;
 
-  try {
-    const { data, error } = await supabase
-      .from("jobs")
-      .select(`*, profiles(id, name, username, profile_image_url)`)
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from("jobs")
+        .select(`*, profiles(id, name, username, profile_image_url)`)
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
 
-    if (error) throw error;
+      if (error) throw error;
 
-    setUserJobs(data || []);
-  } catch (error) {
-    console.error("Error loading user jobs:", error);
-  }
-};
+      setUserJobs(data || []);
+    } catch (error) {
+      console.error("Error loading user jobs:", error);
+    }
+  };
   const createJob = async (
     title: string, email: string, imageUri?: string, category?: string,
     description?: string, location?: string, negotiable?: boolean, minPrice?: string, maxPrice?: string,
@@ -147,7 +147,7 @@ export const useJobs = () => {
       }
 
       // Refresh jobs
-      await loadPublicJobs ();
+      await loadPublicJobs();
     } catch (error) {
       console.error("Error in createJob:", error);
       throw error;
@@ -199,5 +199,57 @@ export const useJobs = () => {
     await loadUserJobs();
   };
 
-  return { createJob, jobs, refreshJobs, deactivateJob, reactivateJob, userJobs };
+  const updateJob = async (
+    jobId: string,
+    title: string,
+    email: string,
+    imageUri?: string,
+    category?: string,
+    description?: string,
+    location?: string,
+    negotiable?: boolean,
+    minPrice?: string,
+    maxPrice?: string,
+    contactName?: string,
+    phoneNumber?: string
+  ) => {
+    if (!user) throw new Error("User not authenticated");
+
+    try {
+      let imageUrl = imageUri;
+
+      // If image changed (local file), upload it
+      if (imageUri && imageUri.startsWith("file")) {
+        imageUrl = await uploadJobImage(user.id, imageUri);
+      }
+
+      const { error } = await supabase
+        .from("jobs")
+        .update({
+          title,
+          category: category || null,
+          description: description || null,
+          location: location || null,
+          negotiable: negotiable || false,
+          min_price: minPrice || null,
+          max_price: maxPrice || null,
+          contact_name: contactName || null,
+          email,
+          phone_number: phoneNumber || null,
+          image_url: imageUrl || null,
+        })
+        .eq("id", jobId)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      await loadPublicJobs();
+      await loadUserJobs();
+    } catch (error) {
+      console.error("Error updating job:", error);
+      throw error;
+    }
+  };
+
+  return { createJob, jobs, refreshJobs, deactivateJob, reactivateJob, updateJob, userJobs };
 };

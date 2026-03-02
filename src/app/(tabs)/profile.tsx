@@ -11,8 +11,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { uploadProfileImage } from "../..//lib/supabase/storage";
-import { useState } from "react";
-import { useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
 import { Job, useJobs } from "../../hooks/useJobs";
 
 const MyJobCard = ({ job }: { job: Job }) => {
@@ -60,7 +60,13 @@ export default function Profile() {
     const [isUpdating, setIsUpdating] = useState(false);
     const router = useRouter();
 
-    const { userJobs } = useJobs();
+    const { userJobs, refreshJobs } = useJobs();
+
+    useFocusEffect(
+        useCallback(() => {
+            refreshJobs();
+        }, [])
+    );
 
     const handleUpdateProfileImage = async () => {
         if (!user) return;

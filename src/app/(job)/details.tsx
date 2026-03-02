@@ -8,17 +8,18 @@ import {
     Alert,
     ActivityIndicator,
 } from "react-native";
-import { useLocalSearchParams, Stack, useRouter } from "expo-router";
+import { useLocalSearchParams, Stack, useRouter, useFocusEffect } from "expo-router";
 import { useJobs } from "../../hooks/useJobs";
 import { Image } from "expo-image";
 import { Colors } from "../../constants/colors";
 import { formatTimeAgo } from "../../lib/date-helper";
 import { useAuth } from '../../context/AuthContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useCallback } from "react";
 
 export default function JobDetails() {
     const { id } = useLocalSearchParams<{ id: string }>();
-    const { jobs, userJobs, deactivateJob, reactivateJob } = useJobs();
+    const { jobs, userJobs, deactivateJob, reactivateJob, refreshJobs } = useJobs();
     const { user } = useAuth();
 
     const job =
@@ -26,6 +27,12 @@ export default function JobDetails() {
         userJobs.find((j) => j.id === id);
     const isOwner = job?.user_id === user?.id;
     const router = useRouter();
+
+    useFocusEffect(
+        useCallback(() => {
+            refreshJobs();
+        }, [])
+    );
 
     if (!job) {
         return (
@@ -44,10 +51,8 @@ export default function JobDetails() {
     };
 
     const handleEdit = () => {
-        // navigate to edit screen
-        // example route: /job/edit/[id]
         router.push({
-            pathname: "/job/edit/[id]",
+            pathname: "/(job)/editJob",
             params: { id: job.id },
         });
     };

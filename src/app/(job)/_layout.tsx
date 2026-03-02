@@ -27,6 +27,19 @@ export default function JobLayout() {
                     },
                 }}
             />
+            <Stack.Screen
+                name="editJob"
+                options={{
+                    title: "Edit Job",
+                    headerStyle: {
+                        backgroundColor: "#fff",
+                    },
+                    headerTintColor: "#000",
+                    headerTitleStyle: {
+                        fontWeight: "bold",
+                    },
+                }}
+            />
         </Stack>
 
     );
