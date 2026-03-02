@@ -9,11 +9,8 @@ https://drive.google.com/file/d/1ZliHOsSJzk4G6tZ4-BGkVEmmtsxnyqs8/view?usp=shari
 
 ## Installation Guide
 Im using: 
-- Nodejs version
 - Expo Go SDK55!
-
-npm run //TODO
-
+for starting the app i use: npx expo start
 
 ## Functional Guide
 1. Project Overview

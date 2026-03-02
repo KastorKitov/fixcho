@@ -4,24 +4,29 @@
     "slug": "fixcho",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/myicon/fixcho_app_logo.png",
+    "icon": "./assets/myicon/fixcho_app_icon_blue.png",
     "userInterfaceStyle": "light",
     "scheme": "fixcho",
     "splash": {
-      "image": "./assets/myicon/fixcho_app_logo.png",
+      "image": "./assets/myicon/fixcho_app_icon_blue.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "icon": "./assets/myicon/fixcho_app_logo.png",
+      "icon": "./assets/myicon/fixcho_app_icon_blue.png",
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/myicon/fixcho_app_logo.png",
+        "foregroundImage": "./assets/myicon/fixcho_app_icon_blue.png",
         "backgroundColor": "#ffffff"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.kastork.fixcho"
     },
     "web": {
       "favicon": "./assets/favicon.png"

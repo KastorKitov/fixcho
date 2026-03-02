@@ -233,6 +233,7 @@ export default function AddJob() {
             <TextInput
               style={styles.input}
               placeholder="Choose your title"
+              placeholderTextColor={Colors.placeholderText}
               value={title}
               onChangeText={setTitle}
             />
@@ -242,6 +243,7 @@ export default function AddJob() {
             <TextInput
               style={styles.input}
               placeholder="Choose a category"
+              placeholderTextColor={Colors.placeholderText}
               value={category}
               onChangeText={setCategory}
             />
@@ -251,6 +253,7 @@ export default function AddJob() {
             <TextInput
               style={styles.textArea}
               placeholder="Write what you need to be done"
+              placeholderTextColor={Colors.placeholderText}
               value={description}
               onChangeText={setDescription}
               multiline
@@ -262,6 +265,7 @@ export default function AddJob() {
             <TextInput
               style={styles.input}
               placeholder="Enter location"
+              placeholderTextColor={Colors.placeholderText}
               value={location}
               onChangeText={setLocation}
             />
@@ -288,6 +292,7 @@ export default function AddJob() {
                   <TextInput
                     style={styles.priceInput}
                     placeholder="Min"
+                    placeholderTextColor={Colors.placeholderText}
                     value={minPrice}
                     onChangeText={(text) => {
                       const formatted = formatNumber(text);
@@ -303,6 +308,7 @@ export default function AddJob() {
                   <TextInput
                     style={styles.priceInput}
                     placeholder="Max"
+                    placeholderTextColor={Colors.placeholderText}
                     value={maxPrice}
                     onChangeText={(text) => {
                       const formatted = formatNumber(text);
@@ -318,6 +324,7 @@ export default function AddJob() {
               <Slider
                 style={{ width: '100%', height: 40, }}
                 minimumTrackTintColor={Colors.button}
+                maximumTrackTintColor={Colors.placeholderText}
                 thumbTintColor={Colors.button}
                 minimumValue={0}
                 maximumValue={10000}
@@ -332,6 +339,7 @@ export default function AddJob() {
               <Slider
                 style={{ width: '100%', height: 40 }}
                 minimumTrackTintColor={Colors.button}
+                maximumTrackTintColor={Colors.placeholderText}
                 thumbTintColor={Colors.button}
                 minimumValue={0}
                 maximumValue={10000}
@@ -348,6 +356,7 @@ export default function AddJob() {
             <TextInput
               style={styles.input}
               placeholder="Enter contact name"
+              placeholderTextColor={Colors.placeholderText}
               value={contactName}
               onChangeText={setContactName}
             />
@@ -356,6 +365,7 @@ export default function AddJob() {
             <TextInput
               style={styles.input}
               placeholder="Enter email"
+              placeholderTextColor={Colors.placeholderText}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -365,6 +375,7 @@ export default function AddJob() {
             <TextInput
               style={styles.input}
               placeholder="Enter phone number"
+              placeholderTextColor={Colors.placeholderText}
               value={phoneNumber}
               onChangeText={setPhoneNumber}
               keyboardType="phone-pad"
@@ -430,7 +441,8 @@ const styles = StyleSheet.create({
     padding: 16,
     fontSize: 16,
     marginBottom: 16,
-    borderWidth: 1
+    borderWidth: 1,
+    color: "#000"
   },
   textArea: {
     height: 100,
@@ -501,6 +513,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 14,
     fontSize: 16,
+    color: "#000",
   },
   helperText: {
     fontSize: 12,

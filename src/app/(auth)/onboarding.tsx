@@ -350,6 +350,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderWidth: 1,
     borderColor: "#e0e0e0",
+    color: "#000"
   },
   button: {
     backgroundColor: Colors.button,
