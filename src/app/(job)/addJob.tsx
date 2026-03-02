@@ -7,20 +7,24 @@ import { useJobs } from '../../hooks/useJobs';
 import { useRouter } from 'expo-router';
 import Slider from '@react-native-community/slider';
 import { Switch } from 'react-native';
+import { useAuth } from '../../context/AuthContext';
+import FormField from '../../components/FormField';
 
 export default function AddJob() {
+  const { user } = useAuth();
+
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
-  const [contactName, setContactName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [contactName, setContactName] = useState(user?.name || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || '');
   const [image, setImage] = useState<string | null>(null);
   const [negotiable, setNegotiable] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 0]);
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState(user?.location || '');
 
   const { createJob } = useJobs();
   const router = useRouter();
@@ -94,84 +98,84 @@ export default function AddJob() {
     return phoneRegex.test(phone);
   };
 
-const validateFields = () => {
-  const trimmedTitle = title.trim();
-  const trimmedCategory = category.trim();
-  const trimmedDescription = description.trim();
-  const trimmedEmail = email.trim();
+  const validateFields = () => {
+    const trimmedTitle = title.trim();
+    const trimmedCategory = category.trim();
+    const trimmedDescription = description.trim();
+    const trimmedEmail = email.trim();
 
-  if (!trimmedTitle) {
-    Alert.alert("Title Required", "Please enter a job title.");
-    return false;
-  }
-
-  if (trimmedTitle.length < 6) {
-    Alert.alert("Title Too Short", "Title must be at least 6 characters long.");
-    return false;
-  }
-
-  if (!trimmedCategory) {
-    Alert.alert("Category Required", "Please enter a category.");
-    return false;
-  }
-
-  if (trimmedCategory.length < 6) {
-    Alert.alert("Category Too Short", "Category must be at least 6 characters long.");
-    return false;
-  }
-
-  if (!trimmedDescription) {
-    Alert.alert("Description Required", "Please enter a description.");
-    return false;
-  }
-
-  if (trimmedDescription.length < 12) {
-    Alert.alert("Description Too Short", "Description must be at least 12 characters long.");
-    return false;
-  }
-
-  if (!trimmedEmail) {
-    Alert.alert("Email Required", "Please enter your email.");
-    return false;
-  }
-
-  if (!isValidEmail(trimmedEmail)) {
-    Alert.alert("Invalid Email", "Please enter a valid email address.");
-    return false;
-  }
-
-  if (!isValidPhone(phoneNumber)) {
-    Alert.alert("Invalid Phone", "Please enter a valid phone number.");
-    return false;
-  }
-
-  if (!negotiable) {
-    const min = parseNumber(minPrice);
-    const max = parseNumber(maxPrice);
-
-    if (!maxPrice || max === 0) {
-      Alert.alert("Price Required", "Please enter at least a maximum price.");
+    if (!trimmedTitle) {
+      Alert.alert("Title Required", "Please enter a job title.");
       return false;
     }
 
-    if (min < 0 || max < 0) {
-      Alert.alert("Invalid Price", "Price cannot be negative.");
+    if (trimmedTitle.length < 6) {
+      Alert.alert("Title Too Short", "Title must be at least 6 characters long.");
       return false;
     }
 
-    if (min > max) {
-      Alert.alert("Invalid Price", "Minimum price cannot be greater than maximum price.");
+    if (!trimmedCategory) {
+      Alert.alert("Category Required", "Please enter a category.");
       return false;
     }
 
-    if (max > 10000000) {
-      Alert.alert("Invalid Price", "Maximum price is too high.");
+    if (trimmedCategory.length < 6) {
+      Alert.alert("Category Too Short", "Category must be at least 6 characters long.");
       return false;
     }
-  }
 
-  return true;
-};
+    if (!trimmedDescription) {
+      Alert.alert("Description Required", "Please enter a description.");
+      return false;
+    }
+
+    if (trimmedDescription.length < 12) {
+      Alert.alert("Description Too Short", "Description must be at least 12 characters long.");
+      return false;
+    }
+
+    if (!trimmedEmail) {
+      Alert.alert("Email Required", "Please enter your email.");
+      return false;
+    }
+
+    if (!isValidEmail(trimmedEmail)) {
+      Alert.alert("Invalid Email", "Please enter a valid email address.");
+      return false;
+    }
+
+    if (!isValidPhone(phoneNumber)) {
+      Alert.alert("Invalid Phone", "Please enter a valid phone number.");
+      return false;
+    }
+
+    if (!negotiable) {
+      const min = parseNumber(minPrice);
+      const max = parseNumber(maxPrice);
+
+      if (!maxPrice || max === 0) {
+        Alert.alert("Price Required", "Please enter at least a maximum price.");
+        return false;
+      }
+
+      if (min < 0 || max < 0) {
+        Alert.alert("Invalid Price", "Price cannot be negative.");
+        return false;
+      }
+
+      if (min > max) {
+        Alert.alert("Invalid Price", "Minimum price cannot be greater than maximum price.");
+        return false;
+      }
+
+      if (max > 10000000) {
+        Alert.alert("Invalid Price", "Maximum price is too high.");
+        return false;
+      }
+    }
+
+    return true;
+  };
 
   const handleAddJob = async () => {
 
@@ -224,32 +228,43 @@ const validateFields = () => {
         </TouchableOpacity>
 
         {/* Input Fields */}
-        <TextInput
-          style={styles.input}
-          placeholder="Title*"
-          value={title}
-        />
-        <Text style={styles.helperText}>Minimum 6 characters</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Category*"
-          value={category}
-        />
-        <Text style={styles.helperText}>Minimum 6 characters</Text>
-        <TextInput
-          style={styles.textArea}
-          placeholder="Description*"
-          value={description}
-          multiline
-          maxLength={700}
-        />
-        <Text style={styles.helperText}>Minimum 12 characters</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Location"
-          value={location}
-          onChangeText={setLocation}
-        />
+        <FormField label="Title" required>
+          <TextInput
+            style={styles.input}
+            placeholder="Choose your title"
+            value={title}
+            onChangeText={setTitle}
+          />
+          <Text style={styles.helperText}>Minimum 6 characters</Text>
+        </FormField>
+        <FormField label="Category" required>
+          <TextInput
+            style={styles.input}
+            placeholder="Choose a category"
+            value={category}
+            onChangeText={setCategory}
+          />
+          <Text style={styles.helperText}>Minimum 6 characters</Text>
+        </FormField>
+        <FormField label="Description" required>
+          <TextInput
+            style={styles.textArea}
+            placeholder="Write what you need for the job"
+            value={description}
+            onChangeText={setDescription}
+            multiline
+            maxLength={700}
+          />
+          <Text style={styles.helperText}>Minimum 12 characters</Text>
+        </FormField>
+        <FormField label="Location">
+          <TextInput
+            style={styles.input}
+            placeholder="Enter location"
+            value={location}
+            onChangeText={setLocation}
+          />
+        </FormField>
         {/* PRICE SECTION */}
         <Text style={styles.sectionLabel}>Price Range</Text>
 
@@ -328,26 +343,32 @@ const validateFields = () => {
             />
           </>
         )}
-        <TextInput
-          style={styles.input}
-          placeholder="Contact Name"
-          value={contactName}
-          onChangeText={setContactName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Email*"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Phone Number"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          keyboardType="phone-pad"
-        />
+        <FormField label="Contact Name">
+          <TextInput
+            style={styles.input}
+            placeholder="Enter contact name"
+            value={contactName}
+            onChangeText={setContactName}
+          />
+        </FormField>
+        <FormField label="Email" required>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
+        </FormField>
+        <FormField label="Phone Number">
+          <TextInput
+            style={styles.input}
+            placeholder="Enter phone number"
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            keyboardType="phone-pad"
+          />
+        </FormField>
 
         {/* Add Job Button */}
         <TouchableOpacity style={styles.addButton} onPress={handleAddJob}>
