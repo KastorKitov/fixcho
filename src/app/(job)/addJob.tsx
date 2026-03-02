@@ -9,6 +9,7 @@ import Slider from '@react-native-community/slider';
 import { Switch } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import FormField from '../../components/FormField';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AddJob() {
   const { user } = useAuth();
@@ -205,177 +206,178 @@ export default function AddJob() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <KeyboardAwareScrollView
-        bottomOffset={10}
-        contentContainerStyle={styles.scrollViewContent}
+    <SafeAreaView style={{ flex: 1 }} edges={['left','right']}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
       >
-        {/* Subtitle */}
-        <Text style={styles.subtitle}>What do you offer?</Text>
+        <KeyboardAwareScrollView
+          contentContainerStyle={styles.scrollViewContent}
+        >
+          {/* Subtitle */}
+          <Text style={styles.subtitle}>What do you offer?</Text>
 
-        {/* Image Container */}
-        <TouchableOpacity style={styles.imageContainer} onPress={showImagePicker}>
-          {image ? (
-            <Image source={{ uri: image }} style={styles.image} />
-          ) : (
-            <View style={styles.addImageButton}>
-              <Text style={styles.addImageText}>Add Picture</Text>
-            </View>
+          {/* Image Container */}
+          <TouchableOpacity style={styles.imageContainer} onPress={showImagePicker}>
+            {image ? (
+              <Image source={{ uri: image }} style={styles.image} />
+            ) : (
+              <View style={styles.addImageButton}>
+                <Text style={styles.addImageText}>Add Picture</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+
+          {/* Input Fields */}
+          <FormField label="Title" required>
+            <TextInput
+              style={styles.input}
+              placeholder="Choose your title"
+              value={title}
+              onChangeText={setTitle}
+            />
+            <Text style={styles.helperText}>Minimum 6 characters</Text>
+          </FormField>
+          <FormField label="Category" required>
+            <TextInput
+              style={styles.input}
+              placeholder="Choose a category"
+              value={category}
+              onChangeText={setCategory}
+            />
+            <Text style={styles.helperText}>Minimum 6 characters</Text>
+          </FormField>
+          <FormField label="Description" required>
+            <TextInput
+              style={styles.textArea}
+              placeholder="Write what you need for the job"
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              maxLength={700}
+            />
+            <Text style={styles.helperText}>Minimum 12 characters</Text>
+          </FormField>
+          <FormField label="Location">
+            <TextInput
+              style={styles.input}
+              placeholder="Enter location"
+              value={location}
+              onChangeText={setLocation}
+            />
+          </FormField>
+          {/* PRICE SECTION */}
+          <Text style={styles.sectionLabel}>Price Range</Text>
+
+          {/* Negotiable Toggle */}
+          <View style={styles.negotiableRow}>
+            <Text style={styles.negotiableText}>Negotiable</Text>
+            <Switch
+              value={negotiable}
+              onValueChange={setNegotiable}
+              thumbColor={Colors.button}
+            />
+          </View>
+
+          {!negotiable && (
+            <>
+              {/* Inputs */}
+              <View style={styles.priceRow}>
+                <View style={styles.priceInputWrapper}>
+                  <Text style={styles.currency}>€</Text>
+                  <TextInput
+                    style={styles.priceInput}
+                    placeholder="Min"
+                    value={minPrice}
+                    onChangeText={(text) => {
+                      const formatted = formatNumber(text);
+                      setMinPrice(formatted);
+                      setPriceRange([parseNumber(formatted), priceRange[1]]);
+                    }}
+                    keyboardType="numeric"
+                  />
+                </View>
+
+                <View style={styles.priceInputWrapper}>
+                  <Text style={styles.currency}>€</Text>
+                  <TextInput
+                    style={styles.priceInput}
+                    placeholder="Max"
+                    value={maxPrice}
+                    onChangeText={(text) => {
+                      const formatted = formatNumber(text);
+                      setMaxPrice(formatted);
+                      setPriceRange([priceRange[0], parseNumber(formatted)]);
+                    }}
+                    keyboardType="numeric"
+                  />
+                </View>
+              </View>
+
+              {/* Slider */}
+              <Slider
+                style={{ width: '100%', height: 40, }}
+                minimumTrackTintColor={Colors.button}
+                thumbTintColor={Colors.button}
+                minimumValue={0}
+                maximumValue={10000}
+                step={50}
+                value={priceRange[0]}
+                onValueChange={(value) => {
+                  setPriceRange([value, priceRange[1]]);
+                  setMinPrice(formatNumber(String(value)));
+                }}
+              />
+
+              <Slider
+                style={{ width: '100%', height: 40 }}
+                minimumTrackTintColor={Colors.button}
+                thumbTintColor={Colors.button}
+                minimumValue={0}
+                maximumValue={10000}
+                step={50}
+                value={priceRange[1]}
+                onValueChange={(value) => {
+                  setPriceRange([priceRange[0], value]);
+                  setMaxPrice(formatNumber(String(value)));
+                }}
+              />
+            </>
           )}
-        </TouchableOpacity>
-
-        {/* Input Fields */}
-        <FormField label="Title" required>
-          <TextInput
-            style={styles.input}
-            placeholder="Choose your title"
-            value={title}
-            onChangeText={setTitle}
-          />
-          <Text style={styles.helperText}>Minimum 6 characters</Text>
-        </FormField>
-        <FormField label="Category" required>
-          <TextInput
-            style={styles.input}
-            placeholder="Choose a category"
-            value={category}
-            onChangeText={setCategory}
-          />
-          <Text style={styles.helperText}>Minimum 6 characters</Text>
-        </FormField>
-        <FormField label="Description" required>
-          <TextInput
-            style={styles.textArea}
-            placeholder="Write what you need for the job"
-            value={description}
-            onChangeText={setDescription}
-            multiline
-            maxLength={700}
-          />
-          <Text style={styles.helperText}>Minimum 12 characters</Text>
-        </FormField>
-        <FormField label="Location">
-          <TextInput
-            style={styles.input}
-            placeholder="Enter location"
-            value={location}
-            onChangeText={setLocation}
-          />
-        </FormField>
-        {/* PRICE SECTION */}
-        <Text style={styles.sectionLabel}>Price Range</Text>
-
-        {/* Negotiable Toggle */}
-        <View style={styles.negotiableRow}>
-          <Text style={styles.negotiableText}>Negotiable</Text>
-          <Switch
-            value={negotiable}
-            onValueChange={setNegotiable}
-            thumbColor={Colors.button}
-          />
-        </View>
-
-        {!negotiable && (
-          <>
-            {/* Inputs */}
-            <View style={styles.priceRow}>
-              <View style={styles.priceInputWrapper}>
-                <Text style={styles.currency}>€</Text>
-                <TextInput
-                  style={styles.priceInput}
-                  placeholder="Min"
-                  value={minPrice}
-                  onChangeText={(text) => {
-                    const formatted = formatNumber(text);
-                    setMinPrice(formatted);
-                    setPriceRange([parseNumber(formatted), priceRange[1]]);
-                  }}
-                  keyboardType="numeric"
-                />
-              </View>
-
-              <View style={styles.priceInputWrapper}>
-                <Text style={styles.currency}>€</Text>
-                <TextInput
-                  style={styles.priceInput}
-                  placeholder="Max"
-                  value={maxPrice}
-                  onChangeText={(text) => {
-                    const formatted = formatNumber(text);
-                    setMaxPrice(formatted);
-                    setPriceRange([priceRange[0], parseNumber(formatted)]);
-                  }}
-                  keyboardType="numeric"
-                />
-              </View>
-            </View>
-
-            {/* Slider */}
-            <Slider
-              style={{ width: '100%', height: 40, }}
-              minimumTrackTintColor={Colors.button}
-              thumbTintColor={Colors.button}
-              minimumValue={0}
-              maximumValue={10000}
-              step={50}
-              value={priceRange[0]}
-              onValueChange={(value) => {
-                setPriceRange([value, priceRange[1]]);
-                setMinPrice(formatNumber(String(value)));
-              }}
+          <FormField label="Contact Name">
+            <TextInput
+              style={styles.input}
+              placeholder="Enter contact name"
+              value={contactName}
+              onChangeText={setContactName}
             />
-
-            <Slider
-              style={{ width: '100%', height: 40 }}
-              minimumTrackTintColor={Colors.button}
-              thumbTintColor={Colors.button}
-              minimumValue={0}
-              maximumValue={10000}
-              step={50}
-              value={priceRange[1]}
-              onValueChange={(value) => {
-                setPriceRange([priceRange[0], value]);
-                setMaxPrice(formatNumber(String(value)));
-              }}
+          </FormField>
+          <FormField label="Email" required>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
             />
-          </>
-        )}
-        <FormField label="Contact Name">
-          <TextInput
-            style={styles.input}
-            placeholder="Enter contact name"
-            value={contactName}
-            onChangeText={setContactName}
-          />
-        </FormField>
-        <FormField label="Email" required>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-          />
-        </FormField>
-        <FormField label="Phone Number">
-          <TextInput
-            style={styles.input}
-            placeholder="Enter phone number"
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-            keyboardType="phone-pad"
-          />
-        </FormField>
+          </FormField>
+          <FormField label="Phone Number">
+            <TextInput
+              style={styles.input}
+              placeholder="Enter phone number"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              keyboardType="phone-pad"
+            />
+          </FormField>
 
-        {/* Add Job Button */}
-        <TouchableOpacity style={styles.addButton} onPress={handleAddJob}>
-          <Text style={styles.addButtonText}>Add Job</Text>
-        </TouchableOpacity>
-      </KeyboardAwareScrollView>
-    </KeyboardAvoidingView >
+          {/* Add Job Button */}
+          <TouchableOpacity style={styles.addButton} onPress={handleAddJob}>
+            <Text style={styles.addButtonText}>Add Job</Text>
+          </TouchableOpacity>
+        </KeyboardAwareScrollView>
+      </KeyboardAvoidingView >
+    </SafeAreaView>
   );
 }
 

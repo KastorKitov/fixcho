@@ -1,6 +1,5 @@
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { ActivityIndicator, View } from 'react-native';
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -41,7 +40,6 @@ function RouteGuard() {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
             <KeyboardProvider>
                 <Stack screenOptions={{ headerShown: false }}>
                     <Stack.Screen name="(tabs)" />
@@ -49,7 +47,6 @@ function RouteGuard() {
                     <Stack.Screen name="(job)" />
                 </Stack>
             </KeyboardProvider>
-        </SafeAreaView>
     )
 }
 

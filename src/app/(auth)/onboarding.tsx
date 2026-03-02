@@ -17,6 +17,7 @@ import { uploadProfileImage } from "../../lib/supabase/storage";
 import { useAuth } from '../../context/AuthContext';
 import { useRouter } from "expo-router";
 import { Colors } from '../../constants/colors';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SignUpScreen() {
   const [name, setName] = useState("");
@@ -174,101 +175,103 @@ export default function SignUpScreen() {
     }
   };
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Complete Your Profile</Text>
-          <Text style={styles.subtitle}>
-            Add your information to get started
-          </Text>
-        </View>
-
-        <View style={styles.form}>
-          <TouchableOpacity
-            style={styles.imageContainer}
-            onPress={showImagePicker}
-          >
-            {profileImage ? (
-              <Image
-                cachePolicy={"none"}
-                source={{ uri: profileImage }}
-                style={styles.profileImage}
-              />
-            ) : (
-              <View style={styles.placeholderImage}>
-                <Text style={styles.placeholderText}>+</Text>
-              </View>
-            )}
-            <View style={styles.editBadge}>
-              <Text style={styles.editText}>Edit</Text>
-            </View>
-          </TouchableOpacity>
-          <TextInput
-            style={styles.input}
-            placeholder="Full Name"
-            placeholderTextColor={Colors.placeholderText}
-            value={name}
-            onChangeText={setName}
-            autoCapitalize="words"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            placeholderTextColor={Colors.placeholderText}
-            value={username}
-            onChangeText={setUsername}
-            autoCapitalize="none"
-            autoComplete="username"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Location"
-            placeholderTextColor={Colors.placeholderText}
-            value={location}
-            onChangeText={setLocation}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Phone Number"
-            placeholderTextColor={Colors.placeholderText}
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-            keyboardType="phone-pad"
-          />
-          <View style={{ alignItems: 'center', marginBottom: 10 }}>
-            <Text style={styles.radioTitleText}>I am:</Text>
-            <View style={styles.radioContainer}>
-              <TouchableOpacity
-                style={[styles.box, role === 'user' && styles.selectedBox]}
-                onPress={() => handleRoleChange('user')}
-              >
-                <Text style={[styles.label, role === 'user' && styles.selectedText]}>User</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.box, role === 'professional' && styles.selectedBox]}
-                onPress={() => handleRoleChange('professional')}
-              >
-                <Text style={[styles.label, role === 'professional' && styles.selectedText]}>Professional</Text>
-              </TouchableOpacity>
-            </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <View style={styles.content}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Complete Your Profile</Text>
+            <Text style={styles.subtitle}>
+              Add your information to get started
+            </Text>
           </View>
 
-          <TouchableOpacity style={styles.button}
-            onPress={handleComplete}
-          >
-            {isLoading ? (
-              <ActivityIndicator size={24} color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Complete Setup</Text>
-            )}
-          </TouchableOpacity>
+          <View style={styles.form}>
+            <TouchableOpacity
+              style={styles.imageContainer}
+              onPress={showImagePicker}
+            >
+              {profileImage ? (
+                <Image
+                  cachePolicy={"none"}
+                  source={{ uri: profileImage }}
+                  style={styles.profileImage}
+                />
+              ) : (
+                <View style={styles.placeholderImage}>
+                  <Text style={styles.placeholderText}>+</Text>
+                </View>
+              )}
+              <View style={styles.editBadge}>
+                <Text style={styles.editText}>Edit</Text>
+              </View>
+            </TouchableOpacity>
+            <TextInput
+              style={styles.input}
+              placeholder="Full Name"
+              placeholderTextColor={Colors.placeholderText}
+              value={name}
+              onChangeText={setName}
+              autoCapitalize="words"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              placeholderTextColor={Colors.placeholderText}
+              value={username}
+              onChangeText={setUsername}
+              autoCapitalize="none"
+              autoComplete="username"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Location"
+              placeholderTextColor={Colors.placeholderText}
+              value={location}
+              onChangeText={setLocation}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Phone Number"
+              placeholderTextColor={Colors.placeholderText}
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              keyboardType="phone-pad"
+            />
+            <View style={{ alignItems: 'center', marginBottom: 10 }}>
+              <Text style={styles.radioTitleText}>I am:</Text>
+              <View style={styles.radioContainer}>
+                <TouchableOpacity
+                  style={[styles.box, role === 'user' && styles.selectedBox]}
+                  onPress={() => handleRoleChange('user')}
+                >
+                  <Text style={[styles.label, role === 'user' && styles.selectedText]}>User</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.box, role === 'professional' && styles.selectedBox]}
+                  onPress={() => handleRoleChange('professional')}
+                >
+                  <Text style={[styles.label, role === 'professional' && styles.selectedText]}>Professional</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <TouchableOpacity style={styles.button}
+              onPress={handleComplete}
+            >
+              {isLoading ? (
+                <ActivityIndicator size={24} color="#fff" />
+              ) : (
+                <Text style={styles.buttonText}>Complete Setup</Text>
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 

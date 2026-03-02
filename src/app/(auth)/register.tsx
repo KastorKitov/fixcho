@@ -5,6 +5,7 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useAuth } from '../../context/AuthContext';
 import { Colors } from '../../constants/colors';
 import { supabase } from '../../lib/supabase/client';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function RegisterScreen() {
     const [email, setEmail] = useState("");
@@ -74,6 +75,7 @@ export default function RegisterScreen() {
     };
 
     return (
+        <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.container}
@@ -124,6 +126,7 @@ export default function RegisterScreen() {
                 </TouchableOpacity>
             </ScrollView>
         </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
 
@@ -148,7 +151,7 @@ const styles = StyleSheet.create({
     },
     subtitle: {
         fontSize: 16,
-        marginBottom: 18,
+        marginBottom: 6,
         color: Colors.subtitle
     },
     inputForm: {

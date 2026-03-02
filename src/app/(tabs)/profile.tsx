@@ -76,7 +76,7 @@ export default function Profile() {
     };
 
     return (
-        <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
+        <SafeAreaView style={styles.container} edges={['left', 'right', 'top']}>
             <ScrollView contentContainerStyle={styles.content}>
                 <View style={styles.profileSection}>
                     <TouchableOpacity

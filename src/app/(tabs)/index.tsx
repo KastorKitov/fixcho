@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
 import { Colors } from '../../constants/colors';
-import { router, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Job, useJobs } from '../../hooks/useJobs';
 import { Image } from "expo-image";
 import { formatTimeAgo } from '../../lib/date-helper';
 import { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface JobCardProps {
   job: Job;
@@ -73,21 +74,21 @@ export default function Index() {
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.jobHeader}>
-        <Text style={{ color: '#fff', fontSize: 18, fontWeight: 'bold' }}>Available Jobs</Text>
-      </View>
-      <FlatList
-        data={jobs}
-        renderItem={renderJob}
-        keyExtractor={(item) => item.id}
-        ListEmptyComponent={<Text>No jobs found</Text>}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      />
-      <TouchableOpacity style={styles.plusButton} onPress={() => router.push('/(job)/addJob')}>
-        <Text style={styles.plusButtonText}>+</Text>
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView style={styles.container} edges={['left', 'right', 'top']}>
+        <View style={styles.jobHeader}>
+          <Text style={{ color: '#fff', fontSize: 18, fontWeight: 'bold' }}>Available Jobs</Text>
+        </View>
+        <FlatList
+          data={jobs}
+          renderItem={renderJob}
+          keyExtractor={(item) => item.id}
+          ListEmptyComponent={<Text>No jobs found</Text>}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        />
+        <TouchableOpacity style={styles.plusButton} onPress={() => router.push('/(job)/addJob')}>
+          <Text style={styles.plusButtonText}>+</Text>
+        </TouchableOpacity>
+    </SafeAreaView>
   );
 }
 
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
   },
   plusButton: {
     position: "absolute",
-    bottom: 30,
+    bottom: 20,
     right: 30,
     width: 60,
     height: 60,

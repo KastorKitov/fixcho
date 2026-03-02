@@ -5,18 +5,24 @@ import {
     ScrollView,
     TouchableOpacity,
     Linking,
+    Alert,
 } from "react-native";
-import { useLocalSearchParams, Stack } from "expo-router";
+import { useLocalSearchParams, Stack, useRouter } from "expo-router";
 import { useJobs } from "../../hooks/useJobs";
 import { Image } from "expo-image";
 import { Colors } from "../../constants/colors";
 import { formatTimeAgo } from "../../lib/date-helper";
+import { useAuth } from '../../context/AuthContext';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function JobDetails() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const { jobs } = useJobs();
+    const { user } = useAuth();
 
     const job = jobs.find((j) => j.id === id);
+    const isOwner = job?.user_id === user?.id;
+    const router = useRouter();
 
     if (!job) {
         return (
@@ -34,8 +40,39 @@ export default function JobDetails() {
         Linking.openURL(`tel:${job.phone_number}`);
     };
 
+    const handleEdit = () => {
+        // navigate to edit screen
+        // example route: /job/edit/[id]
+        router.push({
+            pathname: "/job/edit/[id]",
+            params: { id: job.id },
+        });
+    };
+
+    const handleDelete = () => {
+        Alert.alert(
+            "Delete Job",
+            "Are you sure you want to delete this job?",
+            [
+                { text: "Cancel", style: "cancel" },
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            //await deleteJob(job.id); // make sure you have this in useJobs
+                            router.replace("/(tabs)");
+                        } catch (error) {
+                            Alert.alert("Error", "Failed to delete job.");
+                        }
+                    },
+                },
+            ]
+        );
+    };
+
     return (
-        <>
+        <SafeAreaView style={{ flex: 1 }} edges={['left', 'right']}>
             <Stack.Screen
                 options={{
                     title: "Job Details",
@@ -105,9 +142,26 @@ export default function JobDetails() {
                             </TouchableOpacity>
                         ) : null}
                     </View>
+                    {isOwner && (
+                        <View style={styles.ownerActions}>
+                            <TouchableOpacity
+                                style={[styles.actionButton, styles.editButton]}
+                                onPress={handleEdit}
+                            >
+                                <Text style={styles.actionText}>Edit</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={[styles.actionButton, styles.deleteButton]}
+                                onPress={handleDelete}
+                            >
+                                <Text style={styles.actionText}>Delete</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
                 </View>
             </ScrollView>
-        </>
+        </SafeAreaView>
     );
 };
 
@@ -124,6 +178,7 @@ const styles = StyleSheet.create({
 
     content: {
         padding: 20,
+        marginBottom: 60
     },
 
     title: {
@@ -208,5 +263,31 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    ownerActions: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginTop: 20
+    },
+
+    actionButton: {
+        flex: 0.48,
+        paddingVertical: 14,
+        borderRadius: 12,
+        alignItems: "center",
+    },
+
+    editButton: {
+        backgroundColor: Colors.button
+    },
+
+    deleteButton: {
+        backgroundColor: Colors.deleteButton
+    },
+
+    actionText: {
+        color: "#fff",
+        fontWeight: "600",
+        fontSize: 16,
     },
 });

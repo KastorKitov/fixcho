@@ -4,6 +4,7 @@ import { Colors } from '../../constants/colors';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function LoginScreen() {
     const [email, setEmail] = useState("");
@@ -34,49 +35,51 @@ export default function LoginScreen() {
     };
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.container}
-        >
-            <View style={styles.content}>
-                <View style={styles.imageContainer}>
-                    <Image source={require("../../../assets/myicon/fixcho_logo_blueberry.png")} style={{ width: 400, height: 200 }} />
+        <SafeAreaView style={{ flex: 1 }}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.container}
+            >
+                <View style={styles.content}>
+                    <View style={styles.imageContainer}>
+                        <Image source={require("../../../assets/myicon/fixcho_logo_blueberry.png")} style={{ width: 400, height: 200 }} />
+                    </View>
+                    <Text style={styles.subtitle}>Sign In to Continue</Text>
+                    <View style={styles.inputForm}>
+                        <TextInput
+                            placeholder="Email..."
+                            placeholderTextColor={Colors.placeholderText}
+                            keyboardType="email-address"
+                            autoComplete="email"
+                            autoCapitalize="none"
+                            value={email}
+                            onChangeText={setEmail}
+                            style={styles.inputField}
+                        />
+                        <TextInput
+                            placeholder="Password"
+                            placeholderTextColor={Colors.placeholderText}
+                            autoComplete="password"
+                            secureTextEntry
+                            autoCapitalize="none"
+                            value={password}
+                            onChangeText={setPassword}
+                            style={styles.inputField}
+                        />
+                    </View>
+                    <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                        {isLoading ? (
+                            <ActivityIndicator color={Colors.buttonText} />
+                        ) : (
+                            <Text style={styles.loginButtonText}>Sign In</Text>
+                        )}
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.signUpText} onPress={() => router.push("/(auth)/register")}>
+                        <Text style={styles.signUpButtonText}>Don't have an account? <Text style={styles.signUpButtonTextBold}>Sign Up</Text></Text>
+                    </TouchableOpacity>
                 </View>
-                <Text style={styles.subtitle}>Sign In to Continue</Text>
-                <View style={styles.inputForm}>
-                    <TextInput
-                        placeholder="Email..."
-                        placeholderTextColor={Colors.placeholderText}
-                        keyboardType="email-address"
-                        autoComplete="email"
-                        autoCapitalize="none"
-                        value={email}
-                        onChangeText={setEmail}
-                        style={styles.inputField}
-                    />
-                    <TextInput
-                        placeholder="Password"
-                        placeholderTextColor={Colors.placeholderText}
-                        autoComplete="password"
-                        secureTextEntry
-                        autoCapitalize="none"
-                        value={password}
-                        onChangeText={setPassword}
-                        style={styles.inputField}
-                    />
-                </View>
-                <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                    {isLoading ? (
-                        <ActivityIndicator color={Colors.buttonText} />
-                    ) : (
-                        <Text style={styles.loginButtonText}>Sign In</Text>
-                    )}
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.signUpText} onPress={() => router.push("/(auth)/register")}>
-                    <Text style={styles.signUpButtonText}>Don't have an account? <Text style={styles.signUpButtonTextBold}>Sign Up</Text></Text>
-                </TouchableOpacity>
-            </View>
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
 
