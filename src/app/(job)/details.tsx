@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     Linking,
     Alert,
+    ActivityIndicator,
 } from "react-native";
 import { useLocalSearchParams, Stack, useRouter } from "expo-router";
 import { useJobs } from "../../hooks/useJobs";
@@ -17,17 +18,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function JobDetails() {
     const { id } = useLocalSearchParams<{ id: string }>();
-    const { jobs, deactivateJob } = useJobs();
+    const { jobs, userJobs, deactivateJob, reactivateJob } = useJobs();
     const { user } = useAuth();
 
-    const job = jobs.find((j) => j.id === id);
+    const job =
+        jobs.find((j) => j.id === id) ||
+        userJobs.find((j) => j.id === id);
     const isOwner = job?.user_id === user?.id;
     const router = useRouter();
 
     if (!job) {
         return (
-            <View style={styles.center}>
-                <Text>Job not found</Text>
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <ActivityIndicator size="large" />
             </View>
         );
     }
@@ -64,6 +67,28 @@ export default function JobDetails() {
                             router.replace("/(tabs)");
                         } catch (error) {
                             Alert.alert("Error", "Failed to deactivate job.");
+                        }
+                    },
+                },
+            ]
+        );
+    };
+
+    const handleReactivate = () => {
+        Alert.alert(
+            "Reactivate Job",
+            "Are you sure you want to reactivate this job?",
+            [
+                { text: "Cancel", style: "cancel" },
+                {
+                    text: "Reactivate",
+                    style: "default",
+                    onPress: async () => {
+                        try {
+                            await reactivateJob(job.id);
+                            router.replace("/(tabs)");
+                        } catch (error) {
+                            Alert.alert("Error", "Failed to reactivate job.");
                         }
                     },
                 },
@@ -152,10 +177,17 @@ export default function JobDetails() {
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                style={[styles.actionButton, styles.deactivateButton]}
-                                onPress={handleDeactivate}
+                                style={[
+                                    styles.actionButton,
+                                    job.is_active
+                                        ? styles.deactivateButton
+                                        : styles.activateButton
+                                ]}
+                                onPress={job.is_active ? handleDeactivate : handleReactivate}
                             >
-                                <Text style={styles.actionText}>Deactivate</Text>
+                                <Text style={styles.actionText}>
+                                    {job.is_active ? "Deactivate" : "Activate"}
+                                </Text>
                             </TouchableOpacity>
                         </View>
                     )}
@@ -210,7 +242,7 @@ const styles = StyleSheet.create({
     price: {
         fontSize: 18,
         fontWeight: "600",
-        color: "#2e7d32",
+        color: Colors.greenButton
     },
 
     negotiable: {
@@ -282,12 +314,15 @@ const styles = StyleSheet.create({
     },
 
     deactivateButton: {
-        backgroundColor: Colors.deleteButton
+        backgroundColor: Colors.redButton
     },
 
     actionText: {
         color: "#fff",
         fontWeight: "600",
         fontSize: 16,
+    },
+    activateButton: {
+        backgroundColor: Colors.greenButton
     },
 });

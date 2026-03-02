@@ -5,8 +5,8 @@ export const Colors = {
   primaryBlack: '#000', // Black for primary actions
   secondary: '#9eb40a', // Green
   button: '#2c3f70',  // Button color
-  // button: '#95a339',  // Button color
-  deleteButton: '#a5231c', // Red for delete actions
+  redButton: '#a5231c', // Red for delete actions
+  greenButton: '#82b62f', // Green for activate actions
   buttonText: '#fff', // Button text color
   placeholderText: '#999', // Placeholder text color
 };

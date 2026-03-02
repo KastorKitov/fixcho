@@ -13,11 +13,54 @@ import * as ImagePicker from "expo-image-picker";
 import { uploadProfileImage } from "../..//lib/supabase/storage";
 import { useState } from "react";
 import { useRouter } from "expo-router";
+import { Job, useJobs } from "../../hooks/useJobs";
+
+const MyJobCard = ({ job }: { job: Job }) => {
+    const router = useRouter();
+
+    return (
+        <TouchableOpacity
+            onPress={() =>
+                router.push({
+                    pathname: "/(job)/details",
+                    params: { id: job.id },
+                })
+            }
+        >
+            <View style={styles.myJobCard}>
+                <Image
+                    source={
+                        job.image_url
+                            ? { uri: job.image_url }
+                            : require("../../../assets/myicon/no_job_photo.png")
+                    }
+                    style={styles.myJobImage}
+                />
+
+                <View style={{ flex: 1 }}>
+                    <Text style={styles.myJobTitle}>{job.title}</Text>
+
+                    <Text style={styles.myJobMeta}>
+                        {job.negotiable
+                            ? "Negotiable"
+                            : `${job.min_price ?? 0}€ - ${job.max_price ?? 0}€`}
+                    </Text>
+
+                    <Text style={styles.myJobMeta}>
+                        {job.is_active ? "🟢 Active" : "🔴 Inactive"}
+                    </Text>
+                </View>
+            </View>
+        </TouchableOpacity>
+    );
+};
 
 export default function Profile() {
     const { user, updateUser, signOut } = useAuth();
     const [isUpdating, setIsUpdating] = useState(false);
     const router = useRouter();
+
+    const { userJobs } = useJobs();
 
     const handleUpdateProfileImage = async () => {
         if (!user) return;
@@ -109,7 +152,6 @@ export default function Profile() {
                     <Text style={styles.username}>@{user?.username || "user"}</Text>
                     <Text style={styles.email}>{user?.email}</Text>
                 </View>
-
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Account</Text>
                     <TouchableOpacity style={styles.settingItem}>
@@ -122,6 +164,15 @@ export default function Profile() {
                     >
                         <Text style={styles.signOutText}>Sign Out</Text>
                     </TouchableOpacity>
+                </View>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>My Jobs</Text>
+
+                    {userJobs.length === 0 ? (
+                        <Text style={{ color: "#999" }}>You have not posted any jobs yet.</Text>
+                    ) : (
+                        userJobs.map((job) => <MyJobCard key={job.id} job={job} />)
+                    )}
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -234,5 +285,31 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "#ff3b30",
         fontWeight: "500",
+    },
+    myJobCard: {
+        flexDirection: "row",
+        alignItems: "center",
+        padding: 12,
+        backgroundColor: "#f9f9f9",
+        borderRadius: 12,
+        marginBottom: 10,
+    },
+
+    myJobImage: {
+        width: 60,
+        height: 60,
+        borderRadius: 8,
+        marginRight: 12,
+    },
+
+    myJobTitle: {
+        fontSize: 16,
+        fontWeight: "600",
+        marginBottom: 4,
+    },
+
+    myJobMeta: {
+        fontSize: 13,
+        color: "#666",
     },
 });

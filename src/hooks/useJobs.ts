@@ -32,14 +32,16 @@ export interface Job {
 
 export const useJobs = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [userJobs, setUserJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
 
   useEffect(() => {
-    loadJobs();
+    loadPublicJobs();
+    loadUserJobs();
   }, []);
 
-  const loadJobs = async () => {
+  const loadPublicJobs  = async () => {
     if (!user) return;
 
     setIsLoading(true);
@@ -77,6 +79,24 @@ export const useJobs = () => {
       setIsLoading(false);
     }
   };
+
+  const loadUserJobs = async () => {
+  if (!user) return;
+
+  try {
+    const { data, error } = await supabase
+      .from("jobs")
+      .select(`*, profiles(id, name, username, profile_image_url)`)
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    setUserJobs(data || []);
+  } catch (error) {
+    console.error("Error loading user jobs:", error);
+  }
+};
   const createJob = async (
     title: string, email: string, imageUri?: string, category?: string,
     description?: string, location?: string, negotiable?: boolean, minPrice?: string, maxPrice?: string,
@@ -127,7 +147,7 @@ export const useJobs = () => {
       }
 
       // Refresh jobs
-      await loadJobs();
+      await loadPublicJobs ();
     } catch (error) {
       console.error("Error in createJob:", error);
       throw error;
@@ -135,7 +155,8 @@ export const useJobs = () => {
   };
 
   const refreshJobs = async () => {
-    await loadJobs();
+    await loadPublicJobs();
+    await loadUserJobs();
   };
 
   const deactivateJob = async (jobId: string) => {
@@ -155,7 +176,8 @@ export const useJobs = () => {
         throw error;
       }
 
-      await loadJobs();
+      await loadPublicJobs();
+      await loadUserJobs();
     } catch (error) {
       console.error("Error in deactivateJob:", error);
       throw error;
@@ -173,8 +195,9 @@ export const useJobs = () => {
 
     if (error) throw error;
 
-    await loadJobs();
+    await loadPublicJobs();
+    await loadUserJobs();
   };
 
-  return { createJob, jobs, refreshJobs, deactivateJob, reactivateJob };
+  return { createJob, jobs, refreshJobs, deactivateJob, reactivateJob, userJobs };
 };
